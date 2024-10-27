@@ -96,7 +96,7 @@ class Floor {
         const floorGeom = new THREE.PlaneGeometry(width,height)
         const floorMat = new THREE.MeshPhongMaterial({
             wireframe: debug, 
-            color: 0xa68380,
+            color: 0x876f5d,
             map: texture, 
         });
 
