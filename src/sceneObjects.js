@@ -22,7 +22,6 @@ class Table {
         
         //get texture 
         const texture = new THREE.TextureLoader().load( "textures/darkWood/Wood067_2K-JPG_Color.jpg" );
-        //const aoTexture = new THREE.TextureLoader().load("textures/wicker/Wicker013_1K-JPG_AmbientOcclusion.jpg")
         const normalTexutre = new THREE.TextureLoader().load("textures/darkWood/Wood067_2K-JPG_NormalDX.jpg")
         //create legs of table 
         let mat = new THREE.MeshPhongMaterial({
@@ -73,4 +72,40 @@ class Table {
     }
 }
 
-export  { Table }
+class Floor {
+    /**
+     * Creates Floor object use Floor.mesh to manipulate
+     * 
+     * @param {Number} scale Scale of floor should be same as scale of table
+     * @param {Number} width width of floor default 200
+     * @param {Number} height height of floor default 200
+     * @param {Boolean} debug turns on debug info like wireframes
+     * 
+     * @example
+     * //create floor
+     * const floor = new Floor(16);
+     * //add to scene
+     * scene.add(floor.mesh)
+     */
+    constructor(scale, width=200, height=200, debug = false) {
+        const texture = new THREE.TextureLoader().load( "textures/tile/Tiles133D_2K-JPG_Color.jpg" );
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        texture.repeat.set( 5, 5 );
+
+        const floorGeom = new THREE.PlaneGeometry(width,height)
+        const floorMat = new THREE.MeshPhongMaterial({
+            wireframe: debug, 
+            color: 0xa68380,
+            map: texture, 
+        });
+
+        this.mesh = new THREE.Mesh(floorGeom, floorMat)
+
+        this.mesh.rotateX(Math.PI/2)
+        this.mesh.rotateY(Math.PI)
+        this.mesh.translateZ(-(scale/2))
+    }
+}
+
+export  { Table, Floor}
