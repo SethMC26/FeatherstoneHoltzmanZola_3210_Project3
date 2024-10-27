@@ -28,7 +28,7 @@ let light = new THREE.AmbientLight(0xFFFFFF, 1)
 scene.add(light)
 
 //create a new table with size 16 (size scaling is still WIP)
-let table = new Table(20);
+let table = new Table(18);
 //add tableGroup(all objects of table)
 scene.add(table.tableGroup);
 

@@ -14,14 +14,23 @@ class Table {
      * //translate entire table to new place
      * table.tableGroup.translateX(x);
      */
-    constructor(scale, texture) {
+    constructor(scale, debug=false) {
         //TO:DO add texture support 
         
         //create table group hold all table objects 
         this.tableGroup = new THREE.Group();
-
+        
+        //get texture 
+        const texture = new THREE.TextureLoader().load( "textures/darkWood/Wood067_2K-JPG_Color.jpg" );
+        //const aoTexture = new THREE.TextureLoader().load("textures/wicker/Wicker013_1K-JPG_AmbientOcclusion.jpg")
+        const normalTexutre = new THREE.TextureLoader().load("textures/darkWood/Wood067_2K-JPG_NormalDX.jpg")
         //create legs of table 
-        let mat = new THREE.MeshPhongMaterial({wireframe: true, color: 0xf5b042});
+        let mat = new THREE.MeshPhongMaterial({
+            wireframe: debug, 
+            color: 0x693d2c, 
+            map: texture,
+            normalMap: normalTexutre
+        });
         let legGeom = new THREE.CylinderGeometry( 2, 2, scale, 16 ); 
         
         //leg meshes 
@@ -50,8 +59,14 @@ class Table {
         this.tableGroup.add(legMesh4)
 
         //create table top
-        const geometry = new THREE.CylinderGeometry( scale * 2, scale * 1.65 , 2, scale ); 
-        const top = new THREE.Mesh( geometry, new THREE.MeshPhongMaterial({wireframe: true, color: 0x543a10}));
+        const topGeom = new THREE.CylinderGeometry( scale * 2, scale * 1.65 , 2, scale ); 
+        const topMat = new THREE.MeshPhongMaterial({
+            wireframe: debug, 
+            color: 0x824a34,
+            map: texture, 
+            normalMap: normalTexutre
+        });
+        const top = new THREE.Mesh( topGeom, topMat);
         top.translateY( 0.5 * scale);
 
         this.tableGroup.add(top);
