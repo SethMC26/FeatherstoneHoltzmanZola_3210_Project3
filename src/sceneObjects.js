@@ -30,7 +30,7 @@ class Table {
             map: texture,
             normalMap: normalTexutre
         });
-        let legGeom = new THREE.CylinderGeometry( 2, 2, scale, 16 ); 
+        let legGeom = new THREE.CylinderGeometry( scale/4, scale/8, scale, 5 ); 
         
         //leg meshes 
         let legMesh1 = new THREE.Mesh(legGeom, mat) 
@@ -58,7 +58,7 @@ class Table {
         this.tableGroup.add(legMesh4)
 
         //create table top
-        const topGeom = new THREE.CylinderGeometry( scale * 2, scale * 1.65 , 2, scale ); 
+        const topGeom = new THREE.CylinderGeometry( scale * 2, scale * 1.65 , scale/6, scale ); 
         const topMat = new THREE.MeshPhongMaterial({
             wireframe: debug, 
             color: 0x824a34,
@@ -91,7 +91,7 @@ class Floor {
         const texture = new THREE.TextureLoader().load( "textures/tile/Tiles133D_2K-JPG_Color.jpg" );
         texture.wrapS = THREE.RepeatWrapping;
         texture.wrapT = THREE.RepeatWrapping;
-        texture.repeat.set( 5, 5 );
+        texture.repeat.set( 2, 2 );
 
         const floorGeom = new THREE.PlaneGeometry(width,height)
         const floorMat = new THREE.MeshPhongMaterial({

@@ -28,12 +28,12 @@ let light = new THREE.AmbientLight(0xFFFFFF, 1)
 scene.add(light)
 
 //create a new table with size 16 (size scaling is still WIP)
-let table = new Table(24);
+let table = new Table(20);
 //add tableGroup(all objects of table)
 scene.add(table.tableGroup);
 
 //create floor
-let floor = new Floor(24);
+let floor = new Floor(20);
 scene.add(floor.mesh)
 
 // This is a wrapper function (needed for the requestAnimationFrame call above) for render
