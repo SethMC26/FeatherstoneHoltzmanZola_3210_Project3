@@ -1,11 +1,10 @@
-
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { Floor, Table } from './sceneObjects';
 import { Card } from './Card';
 import { Deck } from './Deck';
 import { Game } from './game';
-
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 var scene = new THREE.Scene();
 
@@ -29,89 +28,46 @@ document.body.appendChild(renderer.domElement);
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.update();
 
-//create a new table with size 16 (size scaling is still WIP)
-const table = new Table(16);
-table.tableGroup.traverse((object) => {
-    if (object.isMesh) {
-        object.castShadow = true;
-    }
-});
-scene.add(table.tableGroup);
+//basic light to see materials
+let light = new THREE.AmbientLight(0xFFFFFF, 1)
+scene.add(light)
 
-//create floor
-const floor = new Floor(16);
-floor.mesh.receiveShadow = true;
-scene.add(floor.mesh);
+// //create a new table with size 16 (size scaling is still WIP)
+// let table = new Table(20);
+// //add tableGroup(all objects of table)
+// scene.add(table.tableGroup);
 
-// Enable shadow maps on the renderer
-renderer.shadowMap.enabled = true;
+// //create floor
+// let floor = new Floor(20);
+// scene.add(floor.mesh)
 
-// Ambient light with initial blue color
-const ambientLight = new THREE.AmbientLight(0xf59a40, 1);
-scene.add(ambientLight);
-let ambientLightOn = true;
+// Initialize the loader
+const loader = new GLTFLoader();
 
+// Load the game room model
+loader.load(
+  'assets/fantasy_interior/scene.gltf', // Replace with the path to your downloaded model
+  function (gltf) {
+    // Adjust the model's position
+    gltf.scene.position.set(-2700, -20, 750); // Center the model
 
-// Directional light above the table for stronger shadow casting
-const tableLight = new THREE.PointLight(0xFFFFFF, 10000);
-tableLight.position.set(0, 30, 0);
-tableLight.castShadow = true;
-tableLight.shadow.mapSize.width = 2048;
-tableLight.shadow.mapSize.height = 2048;
-tableLight.shadow.camera.near = 10;
-tableLight.shadow.camera.far = 100;
-tableLight.shadow.camera.left = -30;
-tableLight.shadow.camera.right = 30;
-tableLight.shadow.camera.top = 30;
-tableLight.shadow.camera.bottom = -30;
-scene.add(tableLight);
+    // Adjust the camera's position
+    camera.position.set(0, 100, 120); // Move the camera to a better position
 
+    // Add the loaded model to the scene
+    gltf.scene.scale.set(50, 50, 50);
+    scene.add(gltf.scene);
+  },
+  function (xhr) {
+    console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+  },
+  function (error) {
+    console.error('An error happened', error);
+  }
+);
 
-const clock = new THREE.Clock();
-
-const game = new Game(scene);
-
-let shadowsOn = true;
-
-let pointLightOn = true;
-
-const lightMoveStep = 5;
-
-
-/* for testing new animations 
-let card = new Card(2, 11)
-card.mesh.rotateX(Math.PI/2)
-card.mesh.rotateZ(Math.PI/2)
-card.setPosition(25,12.5,0)
-scene.add(card.mesh)
-
-let xAxis = new THREE.Vector3( 1 , 0, 0 );
-let qFinal = new THREE.Quaternion().setFromAxisAngle( xAxis, Math.PI * 2);
-let quaternionKF = new THREE.QuaternionKeyframeTrack( '.quaternion', [ 0, 1, 2 ], 
-    [ 
-        card.mesh.quaternion.x, card.mesh.quaternion.y, card.mesh.quaternion.z, card.mesh.quaternion.w, 
-        -card.mesh.quaternion.x, -card.mesh.quaternion.y, card.mesh.quaternion.z, card.mesh.quaternion.w,
-        qFinal.x, qFinal.y, qFinal.z, qFinal.w,
-    ] );
-let position = new THREE.VectorKeyframeTrack('.position', [0,1,2],
-    [ 
-        25, 9.5, 0, 
-        15, 20, 0, 
-        7, 12.5, 0 
-    ])
-let clip = new THREE.AnimationClip('action', 3, [ position, quaternionKF])
-let mixer = new THREE.AnimationMixer(card.mesh)
-const moveToCenterP1 = mixer.clipAction( clip )
-//moveToCenterP1.play()
-moveToCenterP1.clampWhenFinished = true; 
-*/
-
-// Animation loop
-function animate() {
-    const delta = clock.getDelta();
-    //mixer.update(delta)
-    //update animations 
-    game.updateAnimations(delta)
+// This is a wrapper function (needed for the requestAnimationFrame call above) for render
+function animate(){
     controls.update();
     renderer.render(scene, camera);
 
