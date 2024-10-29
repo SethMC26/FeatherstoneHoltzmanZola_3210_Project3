@@ -1,8 +1,7 @@
-
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { Floor, Table } from './sceneObjects';
-
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 var scene = new THREE.Scene();
 
@@ -27,14 +26,39 @@ controls.update();
 let light = new THREE.AmbientLight(0xFFFFFF, 1)
 scene.add(light)
 
-//create a new table with size 16 (size scaling is still WIP)
-let table = new Table(20);
-//add tableGroup(all objects of table)
-scene.add(table.tableGroup);
+// //create a new table with size 16 (size scaling is still WIP)
+// let table = new Table(20);
+// //add tableGroup(all objects of table)
+// scene.add(table.tableGroup);
 
-//create floor
-let floor = new Floor(20);
-scene.add(floor.mesh)
+// //create floor
+// let floor = new Floor(20);
+// scene.add(floor.mesh)
+
+// Initialize the loader
+const loader = new GLTFLoader();
+
+// Load the game room model
+loader.load(
+  'assets/fantasy_interior/scene.gltf', // Replace with the path to your downloaded model
+  function (gltf) {
+    // Adjust the model's position
+    gltf.scene.position.set(-2700, -20, 750); // Center the model
+
+    // Adjust the camera's position
+    camera.position.set(0, 100, 120); // Move the camera to a better position
+
+    // Add the loaded model to the scene
+    gltf.scene.scale.set(50, 50, 50);
+    scene.add(gltf.scene);
+  },
+  function (xhr) {
+    console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+  },
+  function (error) {
+    console.error('An error happened', error);
+  }
+);
 
 // This is a wrapper function (needed for the requestAnimationFrame call above) for render
 function animate(){
