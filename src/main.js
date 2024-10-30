@@ -52,28 +52,28 @@ class Card {
         this.suit = suit;
         this.rank = rank;
 
-        // Create the front texture with suit and rank
+       
         const frontCanvas = document.createElement('canvas');
         frontCanvas.width = 256;
         frontCanvas.height = 384;
         const context = frontCanvas.getContext('2d');
 
-        // Draw card background
+
         context.fillStyle = '#ffffff';
         context.fillRect(0, 0, frontCanvas.width, frontCanvas.height);
 
-        // Draw suit and rank text
+      
         context.fillStyle = '#000000';
         context.font = 'bold 24px Arial';
         context.textAlign = 'center';
         context.fillText(`${this.rank} of ${this.suit}`, frontCanvas.width / 2, frontCanvas.height / 2);
 
         const frontTexture = new THREE.CanvasTexture(frontCanvas);
-        const backMaterial = new THREE.MeshBasicMaterial({ color: 0x333333 }); // Card back
+        const backMaterial = new THREE.MeshBasicMaterial({ color: 0x333333 }); 
 
-        // Create the card mesh
+   
         const geometry = new THREE.PlaneGeometry(width, height);
-        const materials = [backMaterial, frontTexture]; // Back and front materials
+        const materials = [backMaterial, frontTexture]; 
         this.mesh = new THREE.Mesh(geometry, materials);
         this.mesh.userData = { id: id, suit: suit, rank: rank };
     }
@@ -94,11 +94,11 @@ class Deck {
         this.cards = [];
         let id = 0;
 
-        for (let i = 0; i < 4; i++) { // Only create up to 4 suits
+        for (let i = 0; i < 4; i++) { 
             for (let j = 0; j < ranks.length; j++) {
                 if (this.cards.length < numCards) {
                     const card = new Card(id++, suits[i], ranks[j]);
-                    card.setPosition(0, 0, this.cards.length * 0.01); // Stack cards slightly
+                    card.setPosition(0, 0, this.cards.length * 0.01); 
                     card.addToScene(scene);
                     this.cards.push(card);
                 }
@@ -128,7 +128,7 @@ const deck = new Deck(scene, 50);
 // Animation loop
 function animate() {
     requestAnimationFrame(animate);
-    controls.update(); // Only required if controls.enableDamping = true, or if controls.autoRotate = true
+    controls.update(); 
     renderer.render(scene, camera);
 }
 
