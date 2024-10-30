@@ -36,10 +36,62 @@ scene.add(table.tableGroup);
 let floor = new Floor(20);
 scene.add(floor.mesh)
 
-// This is a wrapper function (needed for the requestAnimationFrame call above) for render
-function animate(){
+// Card class
+class Card {
+    constructor(id, width = 5, height = 7.5) { // Increased card dimensions
+        this.id = id;
+        const geometry = new THREE.PlaneGeometry(width, height);
+        const material = new THREE.MeshBasicMaterial({ color: Math.random() * 0xffffff, side: THREE.DoubleSide });
+        this.mesh = new THREE.Mesh(geometry, material);
+        this.mesh.userData = { id: id };
+    }
+
+    setPosition(x, y, z) {
+        this.mesh.position.set(x, y, z);
+    }
+
+    addToScene(scene) {
+        scene.add(this.mesh);
+    }
+}
+
+/// Deck class
+class Deck {
+    constructor(scene, numCards = 50) {
+        this.scene = scene;
+        this.cards = [];
+        
+        for (let i = 0; i < numCards; i++) {
+            const card = new Card(i);
+            card.setPosition((i % 10) * 6, Math.floor(i / 10) * 9, 2); // Spread out the cards
+            card.addToScene(scene);
+            this.cards.push(card);
+        }
+    }
+
+    shuffle() {
+        for (let i = this.cards.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [this.cards[i], this.cards[j]] = [this.cards[j], this.cards[i]];
+        }
+    }
+
+    removeCard(card) {
+        const index = this.cards.indexOf(card);
+        if (index > -1) {
+            this.scene.remove(this.cards[index].mesh);
+            this.cards.splice(index, 1);
+        }
+    }
+}
+
+// Create a deck of 50 cards and add to the scene
+const deck = new Deck(scene, 50);
+
+// Animation loop
+function animate() {
     controls.update();
-    renderer.render( scene, camera );
+    renderer.render(scene, camera);
     requestAnimationFrame(animate);
 }
-animate()
+animate();
