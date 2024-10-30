@@ -2,6 +2,8 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { Floor, Table } from './sceneObjects';
+import { Card } from './Card';
+import { Deck } from './Deck';
 
 
 var scene = new THREE.Scene();
@@ -40,90 +42,14 @@ scene.add(floor.mesh)
 const light2 = new THREE.AmbientLight(0xffffff, 1);
 scene.add(light2);
 
-// Suits and ranks for cards
-const suits = ['Hearts', 'Diamonds', 'Clubs', 'Spades'];
-const ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
+//add card 
+let card = new Card(5, 'Hearts', '2' )
+card.setPosition(0,25,0)
+scene.add(card.mesh)
 
-
-// Card class
-class Card {
-    constructor(id, suit, rank, width = 5, height = 7.5) {
-        this.id = id;
-        this.suit = suit;
-        this.rank = rank;
-
-       
-        const frontCanvas = document.createElement('canvas');
-        frontCanvas.width = 256;
-        frontCanvas.height = 384;
-        const context = frontCanvas.getContext('2d');
-
-
-        context.fillStyle = '#ffffff';
-        context.fillRect(0, 0, frontCanvas.width, frontCanvas.height);
-
-      
-        context.fillStyle = '#000000';
-        context.font = 'bold 24px Arial';
-        context.textAlign = 'center';
-        context.fillText(`${this.rank} of ${this.suit}`, frontCanvas.width / 2, frontCanvas.height / 2);
-
-        const frontTexture = new THREE.CanvasTexture(frontCanvas);
-        const backMaterial = new THREE.MeshBasicMaterial({ color: 0x333333 }); 
-
-   
-        const geometry = new THREE.PlaneGeometry(width, height);
-        const materials = [backMaterial, frontTexture]; 
-        this.mesh = new THREE.Mesh(geometry, materials);
-        this.mesh.userData = { id: id, suit: suit, rank: rank };
-    }
-
-    setPosition(x, y, z) {
-        this.mesh.position.set(x, y, z);
-    }
-
-    addToScene(scene) {
-        scene.add(this.mesh);
-    }
-}
-
-// Deck class
-class Deck {
-    constructor(scene, numCards = 50) {
-        this.scene = scene;
-        this.cards = [];
-        let id = 0;
-
-        for (let i = 0; i < 4; i++) { 
-            for (let j = 0; j < ranks.length; j++) {
-                if (this.cards.length < numCards) {
-                    const card = new Card(id++, suits[i], ranks[j]);
-                    card.setPosition(0, 0, this.cards.length * 0.01); 
-                    card.addToScene(scene);
-                    this.cards.push(card);
-                }
-            }
-        }
-    }
-
-    shuffle() {
-        for (let i = this.cards.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [this.cards[i], this.cards[j]] = [this.cards[j], this.cards[i]];
-        }
-    }
-
-    removeCard(card) {
-        const index = this.cards.indexOf(card);
-        if (index > -1) {
-            this.scene.remove(this.cards[index].mesh);
-            this.cards.splice(index, 1);
-        }
-    }
-}
-
-// Create and add deck to the scene
-const deck = new Deck(scene, 50);
+//add deck 
+let deck = new Deck(scene)
+deck.shuffle()
 
 // Animation loop
 function animate() {
