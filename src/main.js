@@ -6,10 +6,10 @@ import { Floor, Table } from './sceneObjects';
 
 var scene = new THREE.Scene();
 
-var camera = new THREE.PerspectiveCamera( 35, window.innerWidth / window.innerHeight, .1, 3000 );
+var camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, .1, 3000);
 camera.position.set(0, 0, 100)  // Try moving this around!
-camera.lookAt( new THREE.Vector3(0.0,0.0,0.0));
-scene.add( camera );
+camera.lookAt(new THREE.Vector3(0.0, 0.0, 0.0));
+scene.add(camera);
 
 var renderer = new THREE.WebGLRenderer();
 renderer.setClearColor(0x000000);
@@ -20,7 +20,7 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
 //basic controls for testing 
-const controls = new OrbitControls( camera, renderer.domElement );
+const controls = new OrbitControls(camera, renderer.domElement);
 controls.update();
 
 //basic light to see materials
@@ -36,14 +36,46 @@ scene.add(table.tableGroup);
 let floor = new Floor(20);
 scene.add(floor.mesh)
 
+// Basic light to see materials
+const light2 = new THREE.AmbientLight(0xffffff, 1);
+scene.add(light2);
+
+// Suits and ranks for cards
+const suits = ['Hearts', 'Diamonds', 'Clubs', 'Spades'];
+const ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
+
+
 // Card class
 class Card {
-    constructor(id, width = 5, height = 7.5) { // Increased card dimensions
+    constructor(id, suit, rank, width = 5, height = 7.5) {
         this.id = id;
+        this.suit = suit;
+        this.rank = rank;
+
+        // Create the front texture with suit and rank
+        const frontCanvas = document.createElement('canvas');
+        frontCanvas.width = 256;
+        frontCanvas.height = 384;
+        const context = frontCanvas.getContext('2d');
+
+        // Draw card background
+        context.fillStyle = '#ffffff';
+        context.fillRect(0, 0, frontCanvas.width, frontCanvas.height);
+
+        // Draw suit and rank text
+        context.fillStyle = '#000000';
+        context.font = 'bold 24px Arial';
+        context.textAlign = 'center';
+        context.fillText(`${this.rank} of ${this.suit}`, frontCanvas.width / 2, frontCanvas.height / 2);
+
+        const frontTexture = new THREE.CanvasTexture(frontCanvas);
+        const backMaterial = new THREE.MeshBasicMaterial({ color: 0x333333 }); // Card back
+
+        // Create the card mesh
         const geometry = new THREE.PlaneGeometry(width, height);
-        const material = new THREE.MeshBasicMaterial({ color: Math.random() * 0xffffff, side: THREE.DoubleSide });
-        this.mesh = new THREE.Mesh(geometry, material);
-        this.mesh.userData = { id: id };
+        const materials = [backMaterial, frontTexture]; // Back and front materials
+        this.mesh = new THREE.Mesh(geometry, materials);
+        this.mesh.userData = { id: id, suit: suit, rank: rank };
     }
 
     setPosition(x, y, z) {
@@ -55,17 +87,22 @@ class Card {
     }
 }
 
-/// Deck class
+// Deck class
 class Deck {
     constructor(scene, numCards = 50) {
         this.scene = scene;
         this.cards = [];
-        
-        for (let i = 0; i < numCards; i++) {
-            const card = new Card(i);
-            card.setPosition((i % 10) * 6, Math.floor(i / 10) * 9, 2); // Spread out the cards
-            card.addToScene(scene);
-            this.cards.push(card);
+        let id = 0;
+
+        for (let i = 0; i < 4; i++) { // Only create up to 4 suits
+            for (let j = 0; j < ranks.length; j++) {
+                if (this.cards.length < numCards) {
+                    const card = new Card(id++, suits[i], ranks[j]);
+                    card.setPosition(0, 0, this.cards.length * 0.01); // Stack cards slightly
+                    card.addToScene(scene);
+                    this.cards.push(card);
+                }
+            }
         }
     }
 
@@ -85,13 +122,22 @@ class Deck {
     }
 }
 
-// Create a deck of 50 cards and add to the scene
+// Create and add deck to the scene
 const deck = new Deck(scene, 50);
 
 // Animation loop
 function animate() {
-    controls.update();
-    renderer.render(scene, camera);
     requestAnimationFrame(animate);
+    controls.update(); // Only required if controls.enableDamping = true, or if controls.autoRotate = true
+    renderer.render(scene, camera);
 }
+
+// Handle window resizing
+window.addEventListener('resize', () => {
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+});
+
+// Start the animation loop
 animate();
