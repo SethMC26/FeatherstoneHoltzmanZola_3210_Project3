@@ -105,7 +105,3 @@ $RECYCLE.BIN/
 /node_modules/
 /package-lock.json
 /package.json
-
-# Ignore all assets
-/assets/*
-
