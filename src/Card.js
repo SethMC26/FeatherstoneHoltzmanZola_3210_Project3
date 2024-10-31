@@ -1,17 +1,14 @@
 import * as THREE from 'three';
 
-
 // Card class definition
 class Card {
     constructor(id, suit, rank, width = 2.5, height = 3.5) {
-        // Define suits and ranks for cards
-        this.suits = ['Hearts', 'Diamonds', 'Clubs', 'Spades'];
-        this.ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
-
+        //might delete ID as unneeded
         this.id = id;
         this.suit = suit;
         this.rank = rank;
 
+        console.log("suit", suit, "rank", rank)
         //texture should be loaded in not sure how this would work 
         //const texture = new THREE.CanvasTexture(canvas);
 
@@ -38,31 +35,5 @@ class Card {
 }
 
 // Deck class definition
-class Deck {
-    constructor(scene) {
-        this.scene = scene;
-        this.cards = [];
-        let id = 0;
-
-        // Create 50 cards 
-        for (let i = 0; i < 4; i++) {
-            for (let j = 0; j < ranks.length; j++) {
-                if (this.cards.length < 50) { 
-                    const card = new Card(id++, suits[i], ranks[j]);
-                    card.setPosition((this.cards.length % 10) * 3, Math.floor(this.cards.length / 10) * 0.1, this.cards.length * 0.05);
-                    card.addToScene(scene);
-                    this.cards.push(card);
-                }
-            }
-        }
-    }
-
-    shuffle() {
-        for (let i = this.cards.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [this.cards[i], this.cards[j]] = [this.cards[j], this.cards[i]];
-        }
-    }
-}
 
 export { Card }
