@@ -4,8 +4,8 @@ import { Card } from "./Card";
 const Suits = Object.freeze({
     Hearts: 0,
     Diamonds: 1,
-    Clubs: 3,
-    Spades: 4
+    Clubs: 2,
+    Spades: 3
 })
 
 const Ranks = Object.freeze({
@@ -27,8 +27,6 @@ const Ranks = Object.freeze({
 class Deck {
     constructor(scene) {
         this.cards = [];
-
-        let numCards = 52
         let id = 0;
 
         //code below from ChatGPT
@@ -39,13 +37,13 @@ class Deck {
                 this.cards.push(card);
 
                 // Position cards in a stack
-                card.setPosition(0, 15, id * 0.1);
+                card.mesh.rotateX(-Math.PI/2)
+
+                card.setPosition(0, id * 0.08 + 15, 0);
                 card.addToScene(scene);
                 id++;
             }
         }
-
-        console.log(this.cards[0].rank < this.cards[1].rank)
     }
 
     shuffle() {
@@ -55,6 +53,7 @@ class Deck {
         }
     }
 
+    //not sure we need this 
     removeCard(card) {
         const index = this.cards.indexOf(card);
         if (index > -1) {
@@ -63,9 +62,7 @@ class Deck {
         }
     }
 
-    toString() {
-        return ""
-    }
+
 }
 
 export { Deck }

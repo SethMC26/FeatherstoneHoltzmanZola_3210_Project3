@@ -4,17 +4,16 @@ import * as THREE from 'three';
 class Card {
     constructor(id, suit, rank, width = 2.5, height = 3.5) {
         //might delete ID as unneeded
-        this.id = id;
+        //this.id = id;
         this.suit = suit;
         this.rank = rank;
 
-        console.log("suit", suit, "rank", rank)
         //texture should be loaded in not sure how this would work 
         //const texture = new THREE.CanvasTexture(canvas);
 
         // Create front and back materials
         const frontMaterial = new THREE.MeshBasicMaterial();
-        const backMaterial = new THREE.MeshBasicMaterial({ color: 0x333333, side: THREE.DoubleSide});
+        const backMaterial = new THREE.MeshBasicMaterial({ color: 0x003333, side: THREE.DoubleSide});
         
         //code below doesnt seem to work?
         //const materials = [backMaterial, frontMaterial];

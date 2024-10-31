@@ -4,6 +4,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { Floor, Table } from './sceneObjects';
 import { Card } from './Card';
 import { Deck } from './Deck';
+import { Game } from './game';
 
 
 var scene = new THREE.Scene();
@@ -48,8 +49,10 @@ card.setPosition(0,25,0)
 scene.add(card.mesh)
 
 //add deck 
-let deck = new Deck(scene)
-deck.shuffle()
+//let deck = new Deck(scene)
+//deck.shuffle()
+
+const game = new Game(scene);
 
 // Animation loop
 function animate() {
