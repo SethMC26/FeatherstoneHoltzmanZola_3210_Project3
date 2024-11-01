@@ -34,15 +34,16 @@ class Game {
         }
         console.debug(this.p3.cards)
 
+        //create map of players
         this.players = new Map([
             [1, this.p1], 
             [2, this.p2],
             [3, this.p3],
         ]);
 
-        //TO:DO add end game logic 
+        //test function to see game in action below 
         let counter = 0
-        while(this.isGameOn && counter< 10000) {
+        while(this.isGameOn && counter < 10000) {
             console.log("-------TURN ", counter)
             this.nextTurn()
             counter++;
@@ -51,7 +52,13 @@ class Game {
         console.log(this.players)
     }
 
+    /**
+     * Goes through the next turn of each move 
+     */
     nextTurn() {
+        console.log("Player 1",this.players.get(1), "Player 2", this.players.get(2) ,"Player 3", this.players.get(3))
+
+        //check if players still has cards
         for (let player of this.players.values()) {
             if (player.isInGame && player.cards.length == 0) {
                 console.error("Removing player ", player)
@@ -60,33 +67,32 @@ class Game {
             }
         }
 
+        //if only one player left they have one 
         if (this.numPlayers == 1) {
             this.isGameOn = false;
             console.error("Player: ", this.players.keys().next().value, "wins! ")
             return;
         }
 
-        //have index 0 be null for convi
+        //have index 0 be null so player 1 is index one etc
         let playerCards = [null]
 
+        //if player is not in game create a card with -1 rank to compare so logic still works 
         for (let player of this.players.values()) {
             if (player.isInGame) {
+                //pop card off of players deck
                 playerCards.push(player.cards.shift())
             }
             else {
                 playerCards.push(new Card(-1, -1, -1, 0, 0))
             }
-            //issue here after a player is removed it is going to wrong index
         }
-
-        console.log("Player 1",this.players.get(1), "Player 2", this.players.get(2) ,"Player 3", this.players.get(3))
-        console.log("Player 1 cards",this.players.get(1).cards, "Player 2 cards", this.players.get(2).cards ,"Player 3 cards", this.players.get(3).cards)
 
         console.log("p1 card", playerCards[1], "p2 card", playerCards[2], "p3 card", playerCards[3])
 
         let winner = 0; 
+        //logic to check for winner 
         if (playerCards[1].rank > playerCards[2].rank && playerCards[1].rank > playerCards[3].rank) {
-            //add cards to winner
             winner = 1;
             console.log("p1 wins")
         }
@@ -98,33 +104,47 @@ class Game {
             winner = 3;
             console.log("p3 wins")
         }
+        //no winner meaning WAR
         else {
             console.warn("WAR...what is it good for absolutely nothing!")
             let winnerTuple = this._war()
+            //get winner
             winner = winnerTuple[0]
+            //push war cards to playerCards
             playerCards.push(...winnerTuple[1])
         }
 
+        //get winner and push cards to winner
         let winningPlayer  = this.players.get(winner)
         for (let card of playerCards) {
+            //check if card not falsy(null, 0, "", NaN, etc) and rank is not -1 before adding it to winner's deck
             if (card && card.rank != -1) {
                 winningPlayer.cards.push(card)
             }
         }
     }
 
+    /**
+     * Do war by drawing one face down and one face up card
+     * @returns {Tuple} winnerTuple is an array with first index winnering players id(1, 2, or 3) and second element is array of war cards
+     */
     _war() {
+        //cards of war 
         let playerCards = [];
+        //remaining cards if player runs out of cards during war 
         let remainingCards = [];
 
         for (let player of this.players.values()) {
+            //if player has enough cards to play war 
             if (player.cards.length < 2) {
+                //player runs out of cards and is no longer in the game
                 if (player.isInGame) {
                     player.isInGame = false;
                     this.numPlayers -= 1;
-                }
-                for (let card of playerCards){
-                    remainingCards.push(card)
+                    
+                    for (let card of playerCards){
+                        remainingCards.push(card)
+                    }
                 }
 
                 playerCards.push(null)
@@ -151,9 +171,11 @@ class Game {
             console.log("p3 wins WAR")
             return [3, playerCards]
         }
+        //no winner do war again 
         else {
             console.warn("GIVE ME AN F  GIVE ME A U  GIVE ME A C GIVE ME A K WHATS THAT SPELL...well 1,2,3 what are we fighting for ")
             let winnerTuple = this._war()
+            //add war cards to playerCards
             playerCards.push(...winnerTuple[1])
             playerCards.push(...remainingCards)
             return [winnerTuple[0], playerCards]
