@@ -5,6 +5,7 @@ class Game {
     constructor(scene) {
         //keep track of game state
         this.isGameOn = true;
+        this.numPlayers = 3;
         //create new Deck
         const deck = new Deck(scene);
 
@@ -40,8 +41,11 @@ class Game {
         ]);
 
         //TO:DO add end game logic 
-        for (let i = 0; i < 1000; i++ ) {
-            this.nextTurn();
+        let counter = 0
+        while(this.isGameOn && counter< 1000) {
+            console.log("-------TURN ", counter)
+            this.nextTurn()
+            counter++;
         }
 
         console.log(this.players)
@@ -56,60 +60,94 @@ class Game {
         let playerCards = [null]
 
         for (let player of this.players.values()) {
-            //issue here after a player is removed it is going to wrong index
-            playerCards[i] = player.cards.shift()
-        }
-
-        //handle case for logic below that player is no longer in game and card rank has undefined value
-        for (let i = 1; i<4; i++)  {
-            
-            //might want to handle with more elegance 
-            //falsy value null undefined, 0 "" NaN
-            if (!playerCards[i]) {
-                playerCards[i] = new Card(-1,-1,-1,0,0);
-            }
-        }
-
-        console.log("p1 card", playerCards[1], "p2 card", playerCards[2], "p3 card", playerCards[3])
-
-        if (playerCards[1].rank == playerCards[2].rank && playerCards[2].rank == playerCards[3].rank) {
-            console.warn("War...what is is good for...absolutely nothing")
-        }
-        else {
-            let winner = 0; 
-            if (playerCards[1].rank > playerCards[2].rank && playerCards[1].rank > playerCards[3].rank) {
-                //add cards to winner
-                winner = 1;
-                console.log("p1 wins")
-            }
-            else if (playerCards[2].rank > playerCards[1].rank && playerCards[2].rank > playerCards[3].rank) {
-                winner = 2;
-                console.log("p2 win")
+            if (player.isInGame) {
+                playerCards.push(player.cards.shift())
             }
             else {
-                winner = 3;
-                console.log("p3 wins")
+                playerCards.push(new Card(-1, -1, -1, 0, 0))
             }
-
-            let winningPlayer  = this.players.get(winner)
-            for (let card of playerCards) {
-                if (card && card.rank != -1) {
-                    winningPlayer.cards.push(card)
-                }
-            }
-            console.log(winningPlayer)
+            //issue here after a player is removed it is going to wrong index
         }
 
-        for (let playerIndex of this.players.keys()) {
-            if (this.players.get(playerIndex).cards.length == 0) {
-                console.warn("removing player ", playerIndex, this.players.get(playerIndex))
-                this.players.delete(playerIndex)
+        console.log("Player 1",this.players.get(1), "Player 2", this.players.get(2) ,"Player 3", this.players.get(3))
+        console.log("p1 card", playerCards[1], "p2 card", playerCards[2], "p3 card", playerCards[3])
+
+        let winner = 0; 
+        if (playerCards[1].rank > playerCards[2].rank && playerCards[1].rank > playerCards[3].rank) {
+            //add cards to winner
+            winner = 1;
+            console.log("p1 wins")
+        }
+        else if (playerCards[2].rank > playerCards[1].rank && playerCards[2].rank > playerCards[3].rank) {
+            winner = 2;
+            console.log("p2 win")
+        }
+        else if (playerCards[3].rank > playerCards[1].rank && playerCards[3].rank > playerCards[2].rank) {
+            winner = 3;
+            console.log("p3 wins")
+        }
+        else {
+            console.warn("WAR...what is it good for absolutely nothing!")
+            let winnerTuple = this._war()
+            winner = winnerTuple[0]
+            playerCards.push(...winnerTuple[1])
+        }
+
+        let winningPlayer  = this.players.get(winner)
+        for (let card of playerCards) {
+            if (card && card.rank != -1) {
+                winningPlayer.cards.push(card)
             }
         }
 
-        if (this.players.size == 1) {
+        for (let player of this.players.values()) {
+            if (player.isInGame && player.cards.length == 0) {
+                console.error("Removing player ", player)
+                player.isInGame = false;
+                this.numPlayers -= 1;
+            }
+        }
+
+        if (this.numPlayers == 1) {
             this.isGameOn = false;
             console.error("Player: ", this.players.keys().next().value, "wins! ")
+        }
+    }
+
+    _war() {
+        let playerCards = [];
+
+        for (let player of this.players.values()) {
+            if (player.isInGame) {
+                playerCards.push(player.cards.shift())
+                playerCards.push(player.cards.shift())
+            }
+            else {
+                playerCards.push(null)
+                playerCards.push(new Card(-1, -1, -1, 0, 0))
+            }
+            //issue here after a player is removed it is going to wrong index
+        }
+        console.log("war cards", playerCards)
+        if (playerCards[1].rank > playerCards[3].rank && playerCards[1].rank > playerCards[5].rank) {
+            //add cards to winner
+            console.log("p1 wins WAR")
+            return [1, playerCards]
+
+        }
+        else if (playerCards[3].rank > playerCards[1].rank && playerCards[3].rank > playerCards[5].rank) {
+            console.log("p2 wins WAR")
+            return [2, playerCards]
+        }
+        else if (playerCards[5].rank > playerCards[1].rank && playerCards[5].rank > playerCards[3].rank) {
+            console.log("p3 wins WAR")
+            return [3, playerCards]
+        }
+        else {
+            console.warn("GIVE ME AN F  GIVE ME A U  GIVE ME A C GIVE ME A K WHATS THAT SPELL...well 1,2,3 what are we fighting for ")
+            let winnerTuple = this._war()
+            playerCards.push(...winnerTuple[1])
+            return [winnerTuple[0], playerCards]
         }
     }
 }
@@ -118,10 +156,8 @@ class Player {
     constructor(playerNumber, cards) {
         this.number = playerNumber
         this.cards = cards;
-
+        this.isInGame = true;
     }
 }
-
-
 
 export { Game }
