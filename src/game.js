@@ -42,7 +42,7 @@ class Game {
 
         //TO:DO add end game logic 
         let counter = 0
-        while(this.isGameOn && counter< 1000) {
+        while(this.isGameOn && counter< 10000) {
             console.log("-------TURN ", counter)
             this.nextTurn()
             counter++;
@@ -52,8 +52,18 @@ class Game {
     }
 
     nextTurn() {
-        if (!this.isGameOn) { 
-            return
+        for (let player of this.players.values()) {
+            if (player.isInGame && player.cards.length == 0) {
+                console.error("Removing player ", player)
+                player.isInGame = false;
+                this.numPlayers -= 1;
+            }
+        }
+
+        if (this.numPlayers == 1) {
+            this.isGameOn = false;
+            console.error("Player: ", this.players.keys().next().value, "wins! ")
+            return;
         }
 
         //have index 0 be null for convi
@@ -70,6 +80,8 @@ class Game {
         }
 
         console.log("Player 1",this.players.get(1), "Player 2", this.players.get(2) ,"Player 3", this.players.get(3))
+        console.log("Player 1 cards",this.players.get(1).cards, "Player 2 cards", this.players.get(2).cards ,"Player 3 cards", this.players.get(3).cards)
+
         console.log("p1 card", playerCards[1], "p2 card", playerCards[2], "p3 card", playerCards[3])
 
         let winner = 0; 
@@ -99,35 +111,31 @@ class Game {
                 winningPlayer.cards.push(card)
             }
         }
-
-        for (let player of this.players.values()) {
-            if (player.isInGame && player.cards.length == 0) {
-                console.error("Removing player ", player)
-                player.isInGame = false;
-                this.numPlayers -= 1;
-            }
-        }
-
-        if (this.numPlayers == 1) {
-            this.isGameOn = false;
-            console.error("Player: ", this.players.keys().next().value, "wins! ")
-        }
     }
 
     _war() {
         let playerCards = [];
+        let remainingCards = [];
 
         for (let player of this.players.values()) {
-            if (player.isInGame) {
-                playerCards.push(player.cards.shift())
-                playerCards.push(player.cards.shift())
-            }
-            else {
+            if (player.cards.length < 2) {
+                if (player.isInGame) {
+                    player.isInGame = false;
+                    this.numPlayers -= 1;
+                }
+                for (let card of playerCards){
+                    remainingCards.push(card)
+                }
+
                 playerCards.push(null)
                 playerCards.push(new Card(-1, -1, -1, 0, 0))
             }
-            //issue here after a player is removed it is going to wrong index
+            else if (player.isInGame) {
+                playerCards.push(player.cards.shift())
+                playerCards.push(player.cards.shift())
+            }
         }
+
         console.log("war cards", playerCards)
         if (playerCards[1].rank > playerCards[3].rank && playerCards[1].rank > playerCards[5].rank) {
             //add cards to winner
@@ -147,6 +155,7 @@ class Game {
             console.warn("GIVE ME AN F  GIVE ME A U  GIVE ME A C GIVE ME A K WHATS THAT SPELL...well 1,2,3 what are we fighting for ")
             let winnerTuple = this._war()
             playerCards.push(...winnerTuple[1])
+            playerCards.push(...remainingCards)
             return [winnerTuple[0], playerCards]
         }
     }
