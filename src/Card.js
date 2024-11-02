@@ -112,7 +112,6 @@ class Card {
     }
 
     cardToCenterAnimation(playerNumber) {
-        console.log("Attemping to move to center for ", playerNumber)
         switch(playerNumber){
             case 1: 
                 this.moveToCenterP1.play();
