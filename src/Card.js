@@ -13,7 +13,7 @@ class Card {
 
         // Create front and back materials
         const frontMaterial = new THREE.MeshBasicMaterial();
-        const backMaterial = new THREE.MeshBasicMaterial({ color: 0x003333, side: THREE.DoubleSide});
+        const backMaterial = new THREE.MeshBasicMaterial({ color: 0x8f542c, side: THREE.DoubleSide});
         
         //code below doesnt seem to work?
         //const materials = [backMaterial, frontMaterial];

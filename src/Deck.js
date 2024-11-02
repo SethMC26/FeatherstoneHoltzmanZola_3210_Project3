@@ -38,8 +38,7 @@ class Deck {
 
                 // Position cards in a stack
                 card.mesh.rotateX(-Math.PI/2)
-
-                card.setPosition(0, id * 0.08 + 15, 0);
+                
                 card.addToScene(scene);
                 id++;
             }

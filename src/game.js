@@ -15,22 +15,31 @@ class Game {
         //Create players
         this.p1 = new Player(1, deck.cards.slice(0, 17))
         //move cards to p1 area
+        let offset = 0; //offset will "Stack" the cards
         for (let card of this.p1.cards) {
-            card.mesh.translateX(35)
+            offset += 0.05
+            card.mesh.position.set(-25,9.5 + offset,0)
+            card.mesh.rotateZ(Math.PI/2)
         }
         console.debug(this.p1.cards)
 
         this.p2 = new Player(2, deck.cards.slice(17,34))
         //move cards to p2 area
+        offset = 0;
         for (let card of this.p2.cards) {
-            card.mesh.translateY(-35)
+            offset += 0.05
+            card.mesh.position.set(0,9.5 + offset,25)
         }
         console.debug(this.p2.cards)
 
+        //move cards to p3 area
+        offset = 0;
         this.p3 = new Player(3, deck.cards.slice(34, 52))
         //move cards to p3 area
         for (let card of this.p3.cards) {
-            card.mesh.translateY(35)
+            offset += 0.05
+            card.mesh.position.set(25,9.5 + offset,0)
+            card.mesh.rotateZ(Math.PI/2)
         }
         console.debug(this.p3.cards)
 
@@ -42,14 +51,14 @@ class Game {
         ]);
 
         //test function to see game in action below 
+        /*
         let counter = 0
         while(this.isGameOn && counter < 10000) {
             console.log("-------TURN ", counter)
             this.nextTurn()
             counter++;
         }
-
-        console.log(this.players)
+        */
     }
 
     /**
