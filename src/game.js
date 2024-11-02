@@ -93,7 +93,7 @@ class Game {
                 playerCards.push(player.cards.shift())
             }
             else {
-                playerCards.push(new Card(-1, -1, -1, 0, 0))
+                playerCards.push(new Card(-1, -1, 0, 0))
             }
         }
 
@@ -157,7 +157,7 @@ class Game {
                 }
 
                 playerCards.push(null)
-                playerCards.push(new Card(-1, -1, -1, 0, 0))
+                playerCards.push(new Card(-1, -1, 0, 0))
             }
             else if (player.isInGame) {
                 playerCards.push(player.cards.shift())
