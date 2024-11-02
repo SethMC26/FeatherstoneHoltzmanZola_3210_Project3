@@ -8,6 +8,7 @@ class Game {
         this.numPlayers = 3;
         //create new Deck
         const deck = new Deck(scene);
+        console.log(deck)
 
         //shuffle deck 
         deck.shuffle()
@@ -20,6 +21,7 @@ class Game {
             offset += 0.05
             card.mesh.position.set(-25,9.5 + offset,0)
             card.mesh.rotateZ(Math.PI/2)
+            card.addAnimationClips()
         }
         console.debug(this.p1.cards)
 
@@ -29,17 +31,19 @@ class Game {
         for (let card of this.p2.cards) {
             offset += 0.05
             card.mesh.position.set(0,9.5 + offset,25)
+            card.addAnimationClips()
         }
         console.debug(this.p2.cards)
 
         //move cards to p3 area
         offset = 0;
-        this.p3 = new Player(3, deck.cards.slice(34, 52))
+        this.p3 = new Player(3, deck.cards.slice(34))
         //move cards to p3 area
         for (let card of this.p3.cards) {
             offset += 0.05
             card.mesh.position.set(25,9.5 + offset,0)
             card.mesh.rotateZ(Math.PI/2)
+            card.addAnimationClips()
         }
         console.debug(this.p3.cards)
 
@@ -50,23 +54,14 @@ class Game {
             [3, this.p3],
         ]);
 
-        //test function to see game in action below 
-        /*
-        let counter = 0
-        while(this.isGameOn && counter < 10000) {
-            console.log("-------TURN ", counter)
-            this.nextTurn()
-            counter++;
-        }
-        */
+        this.cardsToAnimate = []
     }
 
     /**
      * Goes through the next turn of each move 
      */
     nextTurn() {
-        console.log("Player 1",this.players.get(1), "Player 2", this.players.get(2) ,"Player 3", this.players.get(3))
-
+        console.log("Player 1",this.players.get(1).cards, "Player 2", this.players.get(2).cards ,"Player 3", this.players.get(3).cards)
         //check if players still has cards
         for (let player of this.players.values()) {
             if (player.isInGame && player.cards.length == 0) {
@@ -82,7 +77,8 @@ class Game {
             console.error("Player: ", this.players.keys().next().value, "wins! ")
             return;
         }
-
+        //clear animation list
+        //this.cardsToAnimate = [];
         //have index 0 be null so player 1 is index one etc
         let playerCards = [null]
 
@@ -90,11 +86,17 @@ class Game {
         for (let player of this.players.values()) {
             if (player.isInGame) {
                 //pop card off of players deck
-                playerCards.push(player.cards.shift())
+                let nextCard = player.cards.shift()
+                playerCards.push(nextCard)
+
+                //play animation 
+                nextCard.cardToCenterAnimation(player.number)
+                this.cardsToAnimate.push(nextCard)
             }
             else {
                 playerCards.push(new Card(-1, -1, 0, 0))
             }
+            console.log("Player number", player.number," cards ", player.cards, player)
         }
 
         console.log("p1 card", playerCards[1], "p2 card", playerCards[2], "p3 card", playerCards[3])
@@ -129,7 +131,17 @@ class Game {
             //check if card not falsy(null, 0, "", NaN, etc) and rank is not -1 before adding it to winner's deck
             if (card && card.rank != -1) {
                 winningPlayer.cards.push(card)
+                //move card to winner pile 
+                //set proper rotation
+                card.mesh.quaternion.copy(winningPlayer.cards[0].mesh.quaternion)
+                //move card 
+                card.mesh.position.set(winningPlayer.cards[0].mesh.position.x, winningPlayer.cards[0].mesh.position.y, 9.5)
             }
+        }
+
+        for (let card of winningPlayer.cards) {
+            card.addAnimationClips();
+            card.mesh.translateY(5)
         }
     }
 
@@ -188,6 +200,12 @@ class Game {
             playerCards.push(...winnerTuple[1])
             playerCards.push(...remainingCards)
             return [winnerTuple[0], playerCards]
+        }
+    }
+
+    updateAnimations(delta) {
+        for (let card of this.cardsToAnimate) {
+            card.mixer.update(delta)
         }
     }
 }
