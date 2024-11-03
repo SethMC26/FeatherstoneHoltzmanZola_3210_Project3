@@ -67,20 +67,35 @@ class Game {
         this.cardsToAnimate = []
         //set p1 to last winner on start this makes no real difference overall just stops undefined behavoir on first run of nextTurn()    
         this.lastWinner = this.p1
+
+        this.war = false;
     }
 
     /**
      * Goes through the next turn of each move 
      */
     nextTurn() {
+        let winner = 0; 
+
+        //this is akwards but necessary to make war take another turn for smooth animations
+        //shes a smooooothhh operatorrrrr 
+        if (this.war) {
+            winner = this._war();
+            if (winner == -1) {
+                //handle case of a multiple wars 
+                return;
+            }
+            this.lastWinner = this.players.get(winner);
+            return;
+        }
+
         console.log("Player 1",this.players.get(1).cards, "Player 2", this.players.get(2).cards ,"Player 3", this.players.get(3).cards)
         //offset is y distance this just makes sure cards arent stacked all on eachother
         let offset = 0;
         for (let card of this.cardsToAnimate) {
             //stop animations needed to move cards properly
-            card.moveToCenterP1.stop()
-            card.moveToCenterP2.stop()
-            card.moveToCenterP3.stop()
+            card.stopAnimations()
+
 
             //move cards to correct pile location
             card.mesh.position.set(this.lastWinner.position.x, this.lastWinner.position.y + offset, this.lastWinner.position.z)
@@ -129,7 +144,7 @@ class Game {
                 console.log("player ", player.number, "next card ", nextCard)
 
                 //play animation 
-                nextCard.cardToCenterAnimation(player.number)
+                nextCard.playCardAnimation(player.number)
                 this.cardsToAnimate.push(nextCard)
             }
             else {
@@ -137,7 +152,6 @@ class Game {
             }
         }
         
-        let winner = 0; 
         //logic to check for winner 
         if (playerCards[1].rank > playerCards[2].rank && playerCards[1].rank > playerCards[3].rank) {
             winner = 1;
@@ -154,8 +168,8 @@ class Game {
         //no winner meaning WAR
         else {
             console.warn("WAR...what is it good for absolutely nothing!")
-            //get winner
-            winner = this._war()
+            //set war to true we are in a war!
+            this.war = true;
         }
 
         //set winner 
@@ -180,6 +194,7 @@ class Game {
                     this.numPlayers -= 1;
                     
                     for (let card of player.cards){
+                        card.warFaceDownAnimation(player.number)
                         this.cardsToAnimate.push(card)
                     }
                 }
@@ -194,6 +209,8 @@ class Game {
                 playerCards.push(faceDownCard,faceUpCard)
 
                 //to:do add animations 
+                faceUpCard.playCardAnimation(player.number)
+                faceDownCard.warFaceDownAnimation(player.number)
                 this.cardsToAnimate.push(faceDownCard, faceUpCard)
             }
         }
@@ -202,21 +219,26 @@ class Game {
         if (playerCards[1].rank > playerCards[3].rank && playerCards[1].rank > playerCards[5].rank) {
             //add cards to winner
             console.log("p1 wins WAR")
+            this.war = false;
             return 1
 
         }
         else if (playerCards[3].rank > playerCards[1].rank && playerCards[3].rank > playerCards[5].rank) {
             console.log("p2 wins WAR")
+            this.war = false;
             return 2
         }
         else if (playerCards[5].rank > playerCards[1].rank && playerCards[5].rank > playerCards[3].rank) {
             console.log("p3 wins WAR")
+            this.war = false; 
             return 3
         }
         //no winner do war again 
         else {
-            console.warn("GIVE ME AN F  GIVE ME A U  GIVE ME A C GIVE ME A K WHATS THAT SPELL...well 1,2,3 what are we fighting for ")            
-            return this._war()
+            console.warn("GIVE ME AN F  GIVE ME A U  GIVE ME A C GIVE ME A K WHATS THAT SPELL...well 1,2,3 what are we fighting for ")
+            this.war = true    
+            return -1;        
+            //return this._war()
         }
     }
 

@@ -55,76 +55,170 @@ class Card {
      * Adds animations clips, note must be done after cards are arranged on table 
      */
     addAnimationClips() {
-        //add animations clips p1 move to center
+        //Create Axis for Quaternion angle 
         let xAxis = new THREE.Vector3( 1 , 0, 0 );
+        //create final rotation quaternion 
         let qFinal = new THREE.Quaternion().setFromAxisAngle( xAxis, Math.PI * 2);
-        let quaternionKF = new THREE.QuaternionKeyframeTrack( '.quaternion', [ 0, 1, 2 ], 
-            [ 
-                this.mesh.quaternion.x, this.mesh.quaternion.y, this.mesh.quaternion.z, this.mesh.quaternion.w, 
-                qFinal.x, qFinal.y, qFinal.z, qFinal.w,
-                -this.mesh.quaternion.x, -this.mesh.quaternion.y, this.mesh.quaternion.z, this.mesh.quaternion.w
-            ] );
-        let position = new THREE.VectorKeyframeTrack('.position', [0,1,2],
-            [ 
-                -25, 9.5, 0, 
-                -14.5, 15, 0, 
-                -7, 9.5, 0 
-            ])
-        let clip = new THREE.AnimationClip('action', 3, [ position, quaternionKF])
-
-        this.moveToCenterP1 = this.mixer.clipAction( clip )
-        this.moveToCenterP1.loop = THREE.LoopOnce
-        this.moveToCenterP1.clampWhenFinished = true;
-        
-        //add animation clip p3 move to center(has same quaternion as p1)
-        position = new THREE.VectorKeyframeTrack('.position', [0,1,2],
-            [ 
-                30, 9.5, 0, 
-                15, 15, 0, 
-                7, 9.5, 0 
-            ])
-        let clip3 = new THREE.AnimationClip('action', 3, [ position, quaternionKF])
-
-        this.moveToCenterP3 = this.mixer.clipAction( clip3 )
-        this.moveToCenterP3.loop = THREE.LoopOnce
-        this.moveToCenterP3.clampWhenFinished = true; 
-        
-
-        xAxis = new THREE.Vector3(0, -1, 0)
-        qFinal = new THREE.Quaternion().setFromAxisAngle(xAxis, Math.PI * 2)
-        quaternionKF = new THREE.QuaternionKeyframeTrack('.quaternion', [0, 1, 2],
+        //add animations clips p1 move to center
+        let clip = this._createAnimationClip(
+            [
+            -25, 9.5, 0, 
+            -14.5, 15, 0, 
+            -7, 9.5, 0 
+            ],
             [
                 this.mesh.quaternion.x, this.mesh.quaternion.y, this.mesh.quaternion.z, this.mesh.quaternion.w, 
                 qFinal.x, qFinal.y, qFinal.z, qFinal.w,
-                -this.mesh.quaternion.x, -this.mesh.quaternion.y, -this.mesh.quaternion.z, this.mesh.quaternion.w
+                this.mesh.quaternion.x, this.mesh.quaternion.y, this.mesh.quaternion.z, this.mesh.quaternion.w
             ]
         )
-        position = new THREE.VectorKeyframeTrack('.position', [0, 1, 2] , 
+        //add clip to create clip
+        this.faceDownP1 = this.mixer.clipAction( clip )
+        //only loop once 
+        this.faceDownP1.loop = THREE.LoopOnce
+        this.faceDownP1.clampWhenFinished = true;
+        
+        //add animation clip p2 move to center
+        clip = this._createAnimationClip(
             [
                 0 , 9.5, 25, 
                 0 , 15, 15, 
                 0, 9.5, 0 
-            ])
-        clip = new THREE.AnimationClip('action', 3, [ position, quaternionKF])
-        this.moveToCenterP2 = this.mixer.clipAction( clip ) 
-        this.moveToCenterP2.loop = THREE.LoopOnce
-        this.moveToCenterP2.clampWhenFinished = true
+            ],
+            [
+                this.mesh.quaternion.x, this.mesh.quaternion.y, this.mesh.quaternion.z, this.mesh.quaternion.w, 
+                qFinal.x, qFinal.y, qFinal.z, qFinal.w,
+                this.mesh.quaternion.x, this.mesh.quaternion.y, this.mesh.quaternion.z, this.mesh.quaternion.w
+            ]
+        )
+        
+        this.faceDownP2 = this.mixer.clipAction( clip ) 
+        this.faceDownP2.loop = THREE.LoopOnce
+        this.faceDownP2.clampWhenFinished = true
+
+        clip = this._createAnimationClip(
+            [
+                25, 9.5, 0, 
+                15, 15, 0, 
+                7, 9.5, 0 
+            ],
+            [
+                this.mesh.quaternion.x, this.mesh.quaternion.y, this.mesh.quaternion.z, this.mesh.quaternion.w, 
+                qFinal.x, qFinal.y, qFinal.z, qFinal.w,
+                this.mesh.quaternion.x, this.mesh.quaternion.y, this.mesh.quaternion.z, this.mesh.quaternion.w
+            ]
+        )
+
+        this.faceDownP3 = this.mixer.clipAction( clip )
+        this.faceDownP3.loop = THREE.LoopOnce
+        this.faceDownP3.clampWhenFinished = true; 
+        
+        //wars card move to center
+        clip = this._createAnimationClip(
+            [
+                -25, 9.5, 0, 
+                -14.5, 15, 0, 
+                -7, 12.5, 0
+            ],
+            [
+                this.mesh.quaternion.x, this.mesh.quaternion.y, this.mesh.quaternion.z, this.mesh.quaternion.w, 
+                this.mesh.quaternion.x, -this.mesh.quaternion.y, -this.mesh.quaternion.z, this.mesh.quaternion.w,
+                qFinal.x, qFinal.y, qFinal.z, qFinal.w,
+            ]
+        )
+        this.playCardP1 = this.mixer.clipAction( clip )
+        this.playCardP1.loop = THREE.LoopOnce
+        this.playCardP1.clampWhenFinished = true; 
+
+        //war card move to center p2
+        clip = this._createAnimationClip(
+            [
+                0, 9.5, 25, 
+                0, 15, 15, 
+                0, 12.5, 0  
+            ],
+            [
+                this.mesh.quaternion.x, this.mesh.quaternion.y, this.mesh.quaternion.z, this.mesh.quaternion.w, 
+                -this.mesh.quaternion.x, this.mesh.quaternion.y, this.mesh.quaternion.z, this.mesh.quaternion.w,
+                qFinal.x, qFinal.y, qFinal.z, qFinal.w,
+            ]
+        )
+        this.playCardP2 = this.mixer.clipAction( clip )
+        this.playCardP2.loop = THREE.LoopOnce
+        this.playCardP2.clampWhenFinished = true; 
+        
+        //wars card move to center
+        clip = this._createAnimationClip(
+            [
+                25, 9.5, 0, 
+                15, 15, 0, 
+                7, 12.5, 0
+            ],
+            [
+                this.mesh.quaternion.x, this.mesh.quaternion.y, this.mesh.quaternion.z, this.mesh.quaternion.w, 
+                this.mesh.quaternion.x, -this.mesh.quaternion.y, -this.mesh.quaternion.z, this.mesh.quaternion.w,
+                qFinal.x, qFinal.y, qFinal.z, qFinal.w,
+            ]
+        )
+        this.playCardP3 = this.mixer.clipAction( clip )
+        this.playCardP3.loop = THREE.LoopOnce
+        this.playCardP3.clampWhenFinished = true; 
     }
 
-    cardToCenterAnimation(playerNumber) {
+    warFaceDownAnimation(playerNumber) {
         switch(playerNumber){
             case 1: 
-                this.moveToCenterP1.play();
+                this.faceDownP1.play();
                 break;
             case 2: 
-                this.moveToCenterP2.play();
+                this.faceDownP2.play();
                 break;
             case 3: 
-                this.moveToCenterP3.play();
+                this.faceDownP3.play();
                 break;
             default: 
                 console.warn("No player number exists for, ", playerNumber)
         }
+    }
+
+    playCardAnimation(playerNumber) {
+        switch(playerNumber) {
+            case 1: 
+                this.playCardP1.play()
+                break;
+            case 2: 
+                this.playCardP2.play()
+                break;
+            case 3:
+                this.playCardP3.play()
+                break;
+            default: 
+            console.warn("No player number exists for, ", playerNumber)
+        }
+    }
+
+    stopAnimations() {
+        this.faceDownP1.stop()
+        this.faceDownP2.stop()
+        this.faceDownP3.stop()
+
+        this.playCardP1.stop()
+        this.playCardP2.stop()
+        this.playCardP3.stop()
+    }
+
+    /**
+     * Creates new animation clip 
+     * 
+     * @param {Array} positionArray Array of lenght 9 with positions for animation
+     * @param {Array} quaternionArray Array of legnth 9 with rotations as Quaternions
+     * @returns {THREE.AnimationClip} a new animation clip
+     */
+    _createAnimationClip(positionArray, quaternionArray) {
+        let quaternionKF = new THREE.QuaternionKeyframeTrack( '.quaternion', [ 0, 1, 2 ], quaternionArray );
+        let position = new THREE.VectorKeyframeTrack('.position', [0,1,2], positionArray)
+        
+        return new THREE.AnimationClip('action', 3, [ position, quaternionKF])
     }
 }
 

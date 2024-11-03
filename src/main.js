@@ -34,7 +34,7 @@ scene.add(light)
 //create a new table with size 16 (size scaling is still WIP)
 let table = new Table(16);
 //add tableGroup(all objects of table)
-//scene.add(table.tableGroup);
+scene.add(table.tableGroup);
 
 //create floor
 let floor = new Floor(16);
@@ -52,30 +52,29 @@ const game = new Game(scene);
 let card = new Card(2, 11)
 card.mesh.rotateX(Math.PI/2)
 card.mesh.rotateZ(Math.PI/2)
-card.setPosition(-30,12.5,0)
+card.setPosition(25,12.5,0)
 scene.add(card.mesh)
 
 let xAxis = new THREE.Vector3( 1 , 0, 0 );
-let qFinal = new THREE.Quaternion().setFromAxisAngle( xAxis, -Math.PI * 2);
+let qFinal = new THREE.Quaternion().setFromAxisAngle( xAxis, Math.PI * 2);
 let quaternionKF = new THREE.QuaternionKeyframeTrack( '.quaternion', [ 0, 1, 2 ], 
     [ 
         card.mesh.quaternion.x, card.mesh.quaternion.y, card.mesh.quaternion.z, card.mesh.quaternion.w, 
+        -card.mesh.quaternion.x, -card.mesh.quaternion.y, card.mesh.quaternion.z, card.mesh.quaternion.w,
         qFinal.x, qFinal.y, qFinal.z, qFinal.w,
-        -card.mesh.quaternion.x, -card.mesh.quaternion.y, card.mesh.quaternion.z, card.mesh.quaternion.w
     ] );
 let position = new THREE.VectorKeyframeTrack('.position', [0,1,2],
     [ 
-        -30, 11, 0, 
-        -14.5, 15, 0, 
-        -7, 9.5, 0 
+        25, 9.5, 0, 
+        15, 20, 0, 
+        7, 12.5, 0 
     ])
 let clip = new THREE.AnimationClip('action', 3, [ position, quaternionKF])
 let mixer = new THREE.AnimationMixer(card.mesh)
 const moveToCenterP1 = mixer.clipAction( clip )
-moveToCenterP1.play()
-moveToCenterP1.loop = THREE.LoopOnce
+//moveToCenterP1.play()
 moveToCenterP1.clampWhenFinished = true; 
-*/ 
+*/
 
 // Animation loop
 function animate() {
