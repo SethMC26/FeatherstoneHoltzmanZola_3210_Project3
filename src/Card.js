@@ -165,6 +165,10 @@ class Card {
         this.playCardP3.clampWhenFinished = true; 
     }
 
+    /**
+     * Starts war face down card animation
+     * @param {Number} playerNumber number of player doing animation(1, 2, 3)
+     */
     warFaceDownAnimation(playerNumber) {
         switch(playerNumber){
             case 1: 
@@ -181,6 +185,10 @@ class Card {
         }
     }
 
+    /**
+     * Starts playing card animation of moving card to center
+     * @param {Number} playerNumber number of player doing animation(1, 2, 3)
+     */
     playCardAnimation(playerNumber) {
         switch(playerNumber) {
             case 1: 
@@ -197,6 +205,10 @@ class Card {
         }
     }
 
+    /**
+     * Stops all possible current animations that are playing
+     * @note Necessary to do this before moving mesh or otherwise transforming it otherwise undefined behavoir could result
+     */
     stopAnimations() {
         this.faceDownP1.stop()
         this.faceDownP2.stop()

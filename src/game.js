@@ -92,10 +92,10 @@ class Game {
         console.log("Player 1",this.players.get(1).cards, "Player 2", this.players.get(2).cards ,"Player 3", this.players.get(3).cards)
         //offset is y distance this just makes sure cards arent stacked all on eachother
         let offset = 0;
+        //go through animating cards to stop there animations and add it to winner pile
         for (let card of this.cardsToAnimate) {
             //stop animations needed to move cards properly
             card.stopAnimations()
-
 
             //move cards to correct pile location
             card.mesh.position.set(this.lastWinner.position.x, this.lastWinner.position.y + offset, this.lastWinner.position.z)
@@ -108,13 +108,13 @@ class Game {
             //push card to winners cards 
             this.lastWinner.cards.push(card)
         }
+        this.cardsToAnimate = []
 
+        //this may be causing issues with gaps in deck
         for (let card of this.lastWinner.cards) {
             card.mesh.translateZ(-0.05); //bump each card up since we got new cards
         }
 
-        this.cardsToAnimate = []
-        
         //check if players still has cards
         for (let player of this.players.values()) {
             if (player.isInGame && player.cards.length == 0) {
@@ -192,7 +192,7 @@ class Game {
                 if (player.isInGame) {
                     player.isInGame = false;
                     this.numPlayers -= 1;
-                    
+                    //add the remaining cards as a face down animaiton
                     for (let card of player.cards){
                         card.warFaceDownAnimation(player.number)
                         this.cardsToAnimate.push(card)
@@ -208,7 +208,7 @@ class Game {
 
                 playerCards.push(faceDownCard,faceUpCard)
 
-                //to:do add animations 
+                //play animations for cards
                 faceUpCard.playCardAnimation(player.number)
                 faceDownCard.warFaceDownAnimation(player.number)
                 this.cardsToAnimate.push(faceDownCard, faceUpCard)
@@ -217,7 +217,6 @@ class Game {
 
         console.log("war cards", playerCards)
         if (playerCards[1].rank > playerCards[3].rank && playerCards[1].rank > playerCards[5].rank) {
-            //add cards to winner
             console.log("p1 wins WAR")
             this.war = false;
             return 1
@@ -242,6 +241,7 @@ class Game {
         }
     }
 
+    //updates mixers for any cards currently animating 
     updateAnimations(delta) {
         for (let card of this.cardsToAnimate) {
             card.mixer.update(delta)
@@ -249,17 +249,28 @@ class Game {
     }
 }
 
+/**
+ * Player represents a player in the game 
+ */
 class Player {
     constructor(playerNumber, cards, position) {
+        //player number 1, 2, 3
         this.number = playerNumber
+        //subset of deck players has
         this.cards = cards;
+        //Keep track of if player has lost
         this.isInGame = true;
+        //position of players pile of cards
         this.position = position
 
         //copy rotation of first card essentially this is rotation of our pile 
         this.quaternion = null;
     }
 
+    /**
+     * Call this after setting up the pile of cards for the player
+     * Internally we are saving the rotations of the pile
+     */
     setPlayerRotation() {
         this.quaternion = new THREE.Quaternion()
         this.quaternion.copy(this.cards[0].mesh.quaternion)
