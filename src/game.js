@@ -12,8 +12,7 @@ class Game {
         console.log(deck)
 
         //shuffle deck
-        //shuffle cards seems to be causing some indexing issues 
-        //deck.shuffle()
+        deck.shuffle()
 
         //Create players
         this.p1 = new Player(1, deck.cards.slice(0, 17), new THREE.Vector3(-25,9.5,0))
@@ -25,6 +24,9 @@ class Game {
             card.mesh.rotateZ(Math.PI/2)
             card.addAnimationClips()
         }
+        //set rotation for later use when moving cards to p1 area
+        this.p1.setPlayerRotation()
+
         console.debug(this.p1.cards)
 
         this.p2 = new Player(2, deck.cards.slice(17,35),new THREE.Vector3(0,9.5,25))
@@ -36,6 +38,8 @@ class Game {
             card.addAnimationClips()
         }
         console.debug(this.p2.cards)
+        //set rotation for later use when moving cards to p2 area
+        this.p2.setPlayerRotation()
 
         //move cards to p3 area
         offset = 0;
@@ -48,6 +52,8 @@ class Game {
             card.addAnimationClips()
         }
         console.debug(this.p3.cards)
+        //set rotation for later use when moving cards to p3 area
+        this.p3.setPlayerRotation()
 
         //create map of players
         this.players = new Map([
@@ -57,7 +63,9 @@ class Game {
         ]);
         console.log(this.players)
 
+        //list of cards to animate 
         this.cardsToAnimate = []
+        //set p1 to last winner on start this makes no real difference overall just stops undefined behavoir on first run of nextTurn()    
         this.lastWinner = this.p1
     }
 
@@ -66,24 +74,28 @@ class Game {
      */
     nextTurn() {
         console.log("Player 1",this.players.get(1).cards, "Player 2", this.players.get(2).cards ,"Player 3", this.players.get(3).cards)
-        //clear animation list and update winnings from last turn 
+        //offset is y distance this just makes sure cards arent stacked all on eachother
         let offset = 0;
         for (let card of this.cardsToAnimate) {
-            //stop animations 
+            //stop animations needed to move cards properly
             card.moveToCenterP1.stop()
             card.moveToCenterP2.stop()
             card.moveToCenterP3.stop()
 
-            this.lastWinner.cards.push(card)
-
-            console.log("card before move", card.mesh.position)
+            //move cards to correct pile location
             card.mesh.position.set(this.lastWinner.position.x, this.lastWinner.position.y + offset, this.lastWinner.position.z)
-            console.log("card after move", card.mesh.position)
+            //set rotation of cards correctly 
+            card.mesh.quaternion.copy(this.lastWinner.quaternion)
             offset += 0.05;
+
+            //remake animation clips to avoid issues
+            card.addAnimationClips()
+            //push card to winners cards 
+            this.lastWinner.cards.push(card)
         }
 
         for (let card of this.lastWinner.cards) {
-            card.mesh.translateZ(-0.05);  // Example movement
+            card.mesh.translateZ(-0.05); //bump each card up since we got new cards
         }
 
         this.cardsToAnimate = []
@@ -167,7 +179,7 @@ class Game {
                     player.isInGame = false;
                     this.numPlayers -= 1;
                     
-                    for (let card of playerCards){
+                    for (let card of player.cards){
                         this.cardsToAnimate.push(card)
                     }
                 }
@@ -221,6 +233,14 @@ class Player {
         this.cards = cards;
         this.isInGame = true;
         this.position = position
+
+        //copy rotation of first card essentially this is rotation of our pile 
+        this.quaternion = null;
+    }
+
+    setPlayerRotation() {
+        this.quaternion = new THREE.Quaternion()
+        this.quaternion.copy(this.cards[0].mesh.quaternion)
     }
 }
 
