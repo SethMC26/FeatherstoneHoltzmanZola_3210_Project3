@@ -40,13 +40,22 @@ scene.add(table.tableGroup);
 let floor = new Floor(16);
 scene.add(floor.mesh)
 
-// Basic light to see materials
-const light2 = new THREE.AmbientLight(0xffffff, 1);
-scene.add(light2);
+// Ambient light with initial blue color
+const ambientLight2 = new THREE.AmbientLight(0x0000FF, 1);
+scene.add(ambientLight2);
+let ambientLightOn = true;
+
+// Point light positioned above the table
+const tableLight = new THREE.PointLight(0xFFFFFF, 1, 50);
+tableLight.position.set(0, 30, 0);
+scene.add(tableLight);
+let pointLightOn = true;
 
 const clock = new THREE.Clock();
 
 const game = new Game(scene);
+
+
 
 /* for testing new animations 
 let card = new Card(2, 11)
@@ -81,8 +90,8 @@ function animate() {
     const delta = clock.getDelta();
     //mixer.update(delta)
     //update animations 
-    game.updateAnimations( delta )
-    controls.update(); 
+    game.updateAnimations(delta)
+    controls.update();
     renderer.render(scene, camera);
 
     requestAnimationFrame(animate);
@@ -100,7 +109,7 @@ window.addEventListener('resize', () => {
 
 // Simple way to setup keybaord controls:
 function keyHandler(e) {
-    switch(e.key){
+    switch (e.key) {
         case "n":
             game.nextTurn()
             break;
@@ -109,6 +118,15 @@ function keyHandler(e) {
             card.mesh.position.set(0,10,0)
             break;
         */
+
+        case "L":
+            ambientLightOn = !ambientLightOn;
+            ambientLight.visible = ambientLightOn;
+            break;
+        case "P":
+            pointLightOn = !pointLightOn;
+            tableLight.visible = pointLightOn;
+            break;
     }
-  }
-  document.addEventListener( "keydown", keyHandler, false );
+}
+document.addEventListener("keydown", keyHandler, false);
