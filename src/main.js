@@ -55,8 +55,8 @@ let ambientLightOn = true;
 
 
 // Directional light above the table for stronger shadow casting
-const tableLight = new THREE.PointLight(0xFFFFFF, 1, 50);
-tableLight.position.set(0, 50, 0);
+const tableLight = new THREE.PointLight(0xFFFFFF, 100, 50);
+tableLight.position.set(0, 100, 0);
 tableLight.castShadow = true;
 tableLight.shadow.mapSize.width = 2048;
 tableLight.shadow.mapSize.height = 2048;
@@ -77,6 +77,7 @@ let shadowsOn = true;
 
 let pointLightOn = true;
 
+const lightMoveStep = 5;
 
 
 /* for testing new animations 
@@ -138,6 +139,18 @@ function keyHandler(e) {
             card.mesh.position.set(0,10,0)
             break;
         */
+        case "w":
+            tableLight.position.z -= lightMoveStep;
+            break;
+        case "s":
+            tableLight.position.z += lightMoveStep;
+            break;
+        case "a":
+            tableLight.position.x -= lightMoveStep;
+            break;
+        case "d":
+            tableLight.position.x += lightMoveStep;
+            break;
 
         case "l":
             ambientLightOn = !ambientLightOn;
@@ -145,9 +158,9 @@ function keyHandler(e) {
             break;
         case "p":
             pointLightOn = !pointLightOn;
-            tableLight.visible = pointLightOn; // Toggle visibility
-            console.log(`Point light toggled: ${pointLightOn}`); // Log light toggle state
-            break;l
+            tableLight.visible = pointLightOn;
+            console.log(`Point light toggled: ${pointLightOn}`);
+            break;
         case "m":
             shadowsOn = !shadowsOn;
             tableLight.castShadow = shadowsOn;
@@ -155,7 +168,9 @@ function keyHandler(e) {
             table.tableGroup.traverse((object) => {
                 if (object.isMesh) object.castShadow = shadowsOn;
             });
-            break; 
+            console.log(`Shadow on toggled: ${shadowsOn}`);
+            break;
+
         case "n":
             game.nextTurn()
             break;
