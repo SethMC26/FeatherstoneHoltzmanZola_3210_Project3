@@ -29,14 +29,12 @@ document.body.appendChild(renderer.domElement);
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.update();
 
-//basic light to see materials
-let light = new THREE.AmbientLight(0xFFFFFF, 1)
-scene.add(light)
-
 //create a new table with size 16 (size scaling is still WIP)
 const table = new Table(16);
 table.tableGroup.traverse((object) => {
-    if (object.isMesh) object.castShadow = true;
+    if (object.isMesh) {
+        object.castShadow = true;
+    }
 });
 scene.add(table.tableGroup);
 
@@ -49,14 +47,14 @@ scene.add(floor.mesh);
 renderer.shadowMap.enabled = true;
 
 // Ambient light with initial blue color
-const ambientLight = new THREE.AmbientLight(0x0000FF, 0.5);
+const ambientLight = new THREE.AmbientLight(0x9200FF, 1);
 scene.add(ambientLight);
 let ambientLightOn = true;
 
 
 // Directional light above the table for stronger shadow casting
-const tableLight = new THREE.PointLight(0xFFFFFF, 1, 50);
-tableLight.position.set(0, 50, 0);
+const tableLight = new THREE.PointLight(0xFFFFFF, 10000);
+tableLight.position.set(0, 30, 0);
 tableLight.castShadow = true;
 tableLight.shadow.mapSize.width = 2048;
 tableLight.shadow.mapSize.height = 2048;
@@ -147,7 +145,7 @@ function keyHandler(e) {
             pointLightOn = !pointLightOn;
             tableLight.visible = pointLightOn; // Toggle visibility
             console.log(`Point light toggled: ${pointLightOn}`); // Log light toggle state
-            break;l
+            break;
         case "m":
             shadowsOn = !shadowsOn;
             tableLight.castShadow = shadowsOn;
