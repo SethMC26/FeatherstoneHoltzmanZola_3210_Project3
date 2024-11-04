@@ -21,6 +21,8 @@ renderer.setClearColor(0x000000);
 //renderer.setPixelRatio(document.getElementById('myCanvas').devicePixelRatio);
 // If you want the render to span the window, uncomment this
 renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.shadowMap.enabled = true; 
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 document.body.appendChild(renderer.domElement);
 
 //basic controls for testing 
@@ -51,18 +53,26 @@ const ambientLight = new THREE.AmbientLight(0x0000FF, 0.5);
 scene.add(ambientLight);
 let ambientLightOn = true;
 
-// Point light positioned above the table
-const tableLight = new THREE.PointLight(0xFFFFFF, 1, 100);
-tableLight.position.set(0, 30, 0);
+
+// Directional light above the table for stronger shadow casting
+const tableLight = new THREE.DirectionalLight(0xFFFFFF, 1);
+tableLight.position.set(0, 50, 0); 
 tableLight.castShadow = true;
+tableLight.shadow.mapSize.width = 2048; 
+tableLight.shadow.mapSize.height = 2048;
+tableLight.shadow.camera.near = 10;
+tableLight.shadow.camera.far = 100;
+tableLight.shadow.camera.left = -30;
+tableLight.shadow.camera.right = 30;
+tableLight.shadow.camera.top = 30;
+tableLight.shadow.camera.bottom = -30;
 scene.add(tableLight);
-let pointLightOn = true;
 
 // Shadow map properties 
-tableLight.shadow.mapSize.width = 1024;
-tableLight.shadow.mapSize.height = 1024;
-tableLight.shadow.camera.near = 0.5;
-tableLight.shadow.camera.far = 500;
+//tableLight.shadow.mapSize.width = 1024;
+//tableLight.shadow.mapSize.height = 1024;
+//tableLight.shadow.camera.near = 0.5;
+//tableLight.shadow.camera.far = 500;
 
 const clock = new THREE.Clock();
 
