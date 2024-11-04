@@ -153,7 +153,7 @@ function keyHandler(e) {
             table.tableGroup.traverse((object) => {
                 if (object.isMesh) object.castShadow = shadowsOn;
             });
-            break; mm
+            break; 
         case "n":
             game.nextTurn()
             break;
