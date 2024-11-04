@@ -32,28 +32,43 @@ let light = new THREE.AmbientLight(0xFFFFFF, 1)
 scene.add(light)
 
 //create a new table with size 16 (size scaling is still WIP)
-let table = new Table(16);
-//add tableGroup(all objects of table)
+const table = new Table(16);
+table.tableGroup.traverse((object) => {
+    if (object.isMesh) object.castShadow = true; 
+});
 scene.add(table.tableGroup);
 
 //create floor
-let floor = new Floor(16);
-scene.add(floor.mesh)
+const floor = new Floor(16);
+floor.mesh.receiveShadow = true;
+scene.add(floor.mesh);
+
+// Enable shadow maps on the renderer
+renderer.shadowMap.enabled = true;
 
 // Ambient light with initial blue color
-const ambientLight2 = new THREE.AmbientLight(0x0000FF, 1);
-scene.add(ambientLight2);
+const ambientLight = new THREE.AmbientLight(0x0000FF, 0.5); 
+scene.add(ambientLight);
 let ambientLightOn = true;
 
 // Point light positioned above the table
-const tableLight = new THREE.PointLight(0xFFFFFF, 1, 50);
+const tableLight = new THREE.PointLight(0xFFFFFF, 1, 100);
 tableLight.position.set(0, 30, 0);
+tableLight.castShadow = true;
 scene.add(tableLight);
 let pointLightOn = true;
+
+// Shadow map properties 
+tableLight.shadow.mapSize.width = 1024;
+tableLight.shadow.mapSize.height = 1024;
+tableLight.shadow.camera.near = 0.5;
+tableLight.shadow.camera.far = 500;
 
 const clock = new THREE.Clock();
 
 const game = new Game(scene);
+
+let shadowsOn = true;
 
 
 
@@ -110,22 +125,30 @@ window.addEventListener('resize', () => {
 // Simple way to setup keybaord controls:
 function keyHandler(e) {
     switch (e.key) {
-        case "n":
-            game.nextTurn()
-            break;
+
         /*
         case "t":
             card.mesh.position.set(0,10,0)
             break;
         */
 
-        case "L":
+        case "l":
             ambientLightOn = !ambientLightOn;
             ambientLight.visible = ambientLightOn;
             break;
-        case "P":
+        case "p":
             pointLightOn = !pointLightOn;
             tableLight.visible = pointLightOn;
+            break;
+        case "m":
+            shadowsOn = !shadowsOn;
+            tableLight.castShadow = shadowsOn; 
+            floor.mesh.receiveShadow = shadowsOn; 
+            table.tableGroup.traverse((object) => {
+                if (object.isMesh) object.castShadow = shadowsOn;
+            });
+        case "n":
+            game.nextTurn()
             break;
     }
 }
