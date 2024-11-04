@@ -21,7 +21,7 @@ renderer.setClearColor(0x000000);
 //renderer.setPixelRatio(document.getElementById('myCanvas').devicePixelRatio);
 // If you want the render to span the window, uncomment this
 renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.shadowMap.enabled = true; 
+renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 document.body.appendChild(renderer.domElement);
 
@@ -36,7 +36,7 @@ scene.add(light)
 //create a new table with size 16 (size scaling is still WIP)
 const table = new Table(16);
 table.tableGroup.traverse((object) => {
-    if (object.isMesh) object.castShadow = true; 
+    if (object.isMesh) object.castShadow = true;
 });
 scene.add(table.tableGroup);
 
@@ -49,16 +49,16 @@ scene.add(floor.mesh);
 renderer.shadowMap.enabled = true;
 
 // Ambient light with initial blue color
-const ambientLight = new THREE.AmbientLight(0x0000FF, 0.5); 
+const ambientLight = new THREE.AmbientLight(0x0000FF, 0.5);
 scene.add(ambientLight);
 let ambientLightOn = true;
 
 
 // Directional light above the table for stronger shadow casting
 const tableLight = new THREE.DirectionalLight(0xFFFFFF, 1);
-tableLight.position.set(0, 50, 0); 
+tableLight.position.set(0, 50, 0);
 tableLight.castShadow = true;
-tableLight.shadow.mapSize.width = 2048; 
+tableLight.shadow.mapSize.width = 2048;
 tableLight.shadow.mapSize.height = 2048;
 tableLight.shadow.camera.near = 10;
 tableLight.shadow.camera.far = 100;
@@ -149,11 +149,12 @@ function keyHandler(e) {
         case "p":
             pointLightOn = !pointLightOn;
             tableLight.visible = pointLightOn;
+            lightHelper.visible = pointLightOn;
             break;
         case "m":
             shadowsOn = !shadowsOn;
-            tableLight.castShadow = shadowsOn; 
-            floor.mesh.receiveShadow = shadowsOn; 
+            tableLight.castShadow = shadowsOn;
+            floor.mesh.receiveShadow = shadowsOn;
             table.tableGroup.traverse((object) => {
                 if (object.isMesh) object.castShadow = shadowsOn;
             });
