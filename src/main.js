@@ -68,11 +68,6 @@ tableLight.shadow.camera.top = 30;
 tableLight.shadow.camera.bottom = -30;
 scene.add(tableLight);
 
-// Shadow map properties 
-//tableLight.shadow.mapSize.width = 1024;
-//tableLight.shadow.mapSize.height = 1024;
-//tableLight.shadow.camera.near = 0.5;
-//tableLight.shadow.camera.far = 500;
 
 const clock = new THREE.Clock();
 
@@ -147,9 +142,9 @@ function keyHandler(e) {
             ambientLight.visible = ambientLightOn;
             break;
         case "p":
-            pointLightOn = !pointLightOn;
-            tableLight.visible = pointLightOn;
-            lightHelper.visible = pointLightOn;
+            tableLightOn = !tableLightOn;
+            tableLight.visible = tableLightOn;
+            lightHelper.visible = tableLightOn;
             break;
         case "m":
             shadowsOn = !shadowsOn;
@@ -158,6 +153,7 @@ function keyHandler(e) {
             table.tableGroup.traverse((object) => {
                 if (object.isMesh) object.castShadow = shadowsOn;
             });
+            break; mm
         case "n":
             game.nextTurn()
             break;
