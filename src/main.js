@@ -10,7 +10,8 @@ import { Game } from './game';
 var scene = new THREE.Scene();
 
 var camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, .1, 3000);
-camera.position.set(0, 0, 100)  // Try moving this around!
+//camera.position.set(-57, 36, 0)  // Try moving this around!
+camera.position.set(0, 30, 70)
 camera.lookAt(new THREE.Vector3(0.0, 0.0, 0.0));
 scene.add(camera);
 
@@ -31,35 +32,63 @@ let light = new THREE.AmbientLight(0xFFFFFF, 1)
 scene.add(light)
 
 //create a new table with size 16 (size scaling is still WIP)
-let table = new Table(20);
+let table = new Table(16);
 //add tableGroup(all objects of table)
 scene.add(table.tableGroup);
 
 //create floor
-let floor = new Floor(20);
+let floor = new Floor(16);
 scene.add(floor.mesh)
 
 // Basic light to see materials
 const light2 = new THREE.AmbientLight(0xffffff, 1);
 scene.add(light2);
 
-//add card 
-let card = new Card(5, 'Hearts', '2' )
-card.setPosition(0,25,0)
-scene.add(card.mesh)
-
-//add deck 
-//let deck = new Deck(scene)
-//deck.shuffle()
+const clock = new THREE.Clock();
 
 const game = new Game(scene);
 
+/* for testing new animations 
+let card = new Card(2, 11)
+card.mesh.rotateX(Math.PI/2)
+card.mesh.rotateZ(Math.PI/2)
+card.setPosition(25,12.5,0)
+scene.add(card.mesh)
+
+let xAxis = new THREE.Vector3( 1 , 0, 0 );
+let qFinal = new THREE.Quaternion().setFromAxisAngle( xAxis, Math.PI * 2);
+let quaternionKF = new THREE.QuaternionKeyframeTrack( '.quaternion', [ 0, 1, 2 ], 
+    [ 
+        card.mesh.quaternion.x, card.mesh.quaternion.y, card.mesh.quaternion.z, card.mesh.quaternion.w, 
+        -card.mesh.quaternion.x, -card.mesh.quaternion.y, card.mesh.quaternion.z, card.mesh.quaternion.w,
+        qFinal.x, qFinal.y, qFinal.z, qFinal.w,
+    ] );
+let position = new THREE.VectorKeyframeTrack('.position', [0,1,2],
+    [ 
+        25, 9.5, 0, 
+        15, 20, 0, 
+        7, 12.5, 0 
+    ])
+let clip = new THREE.AnimationClip('action', 3, [ position, quaternionKF])
+let mixer = new THREE.AnimationMixer(card.mesh)
+const moveToCenterP1 = mixer.clipAction( clip )
+//moveToCenterP1.play()
+moveToCenterP1.clampWhenFinished = true; 
+*/
+
 // Animation loop
 function animate() {
-    requestAnimationFrame(animate);
+    const delta = clock.getDelta();
+    //mixer.update(delta)
+    //update animations 
+    game.updateAnimations( delta )
     controls.update(); 
     renderer.render(scene, camera);
+
+    requestAnimationFrame(animate);
 }
+// Start the animation loop
+animate();
 
 // Handle window resizing
 window.addEventListener('resize', () => {
@@ -68,5 +97,18 @@ window.addEventListener('resize', () => {
     camera.updateProjectionMatrix();
 });
 
-// Start the animation loop
-animate();
+
+// Simple way to setup keybaord controls:
+function keyHandler(e) {
+    switch(e.key){
+        case "n":
+            game.nextTurn()
+            break;
+        /*
+        case "t":
+            card.mesh.position.set(0,10,0)
+            break;
+        */
+    }
+  }
+  document.addEventListener( "keydown", keyHandler, false );

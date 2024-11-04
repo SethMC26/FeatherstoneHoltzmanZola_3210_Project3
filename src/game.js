@@ -1,5 +1,6 @@
 import { Card } from "./Card";
-import { Deck } from "./Deck"
+import { Deck } from "./Deck";
+import * as THREE from 'three';
 
 class Game {
     constructor(scene) {
@@ -8,31 +9,51 @@ class Game {
         this.numPlayers = 3;
         //create new Deck
         const deck = new Deck(scene);
+        console.log(deck)
 
-        //shuffle deck 
+        //shuffle deck
         deck.shuffle()
 
         //Create players
-        this.p1 = new Player(1, deck.cards.slice(0, 17))
+        this.p1 = new Player(1, deck.cards.slice(0, 17), new THREE.Vector3(-25,9.5,0))
         //move cards to p1 area
+        let offset = 0; //offset will "Stack" the cards
         for (let card of this.p1.cards) {
-            card.mesh.translateX(35)
+            offset += 0.05
+            card.mesh.position.set(-25,9.5 + offset,0)
+            card.mesh.rotateZ(Math.PI/2)
+            card.addAnimationClips()
         }
+        //set rotation for later use when moving cards to p1 area
+        this.p1.setPlayerRotation()
+
         console.debug(this.p1.cards)
 
-        this.p2 = new Player(2, deck.cards.slice(17,34))
+        this.p2 = new Player(2, deck.cards.slice(17,35),new THREE.Vector3(0,9.5,25))
         //move cards to p2 area
+        offset = 0;
         for (let card of this.p2.cards) {
-            card.mesh.translateY(-35)
+            offset += 0.05
+            card.mesh.position.set(0,9.5 + offset,25)
+            card.addAnimationClips()
         }
         console.debug(this.p2.cards)
+        //set rotation for later use when moving cards to p2 area
+        this.p2.setPlayerRotation()
 
-        this.p3 = new Player(3, deck.cards.slice(34, 52))
+        //move cards to p3 area
+        offset = 0;
+        this.p3 = new Player(3, deck.cards.slice(35), new THREE.Vector3(25,9.5,0))
         //move cards to p3 area
         for (let card of this.p3.cards) {
-            card.mesh.translateY(35)
+            offset += 0.05
+            card.mesh.position.set(25,9.5 + offset,0)
+            card.mesh.rotateZ(Math.PI/2)
+            card.addAnimationClips()
         }
         console.debug(this.p3.cards)
+        //set rotation for later use when moving cards to p3 area
+        this.p3.setPlayerRotation()
 
         //create map of players
         this.players = new Map([
@@ -40,23 +61,59 @@ class Game {
             [2, this.p2],
             [3, this.p3],
         ]);
-
-        //test function to see game in action below 
-        let counter = 0
-        while(this.isGameOn && counter < 10000) {
-            console.log("-------TURN ", counter)
-            this.nextTurn()
-            counter++;
-        }
-
         console.log(this.players)
+
+        //list of cards to animate 
+        this.cardsToAnimate = []
+        //set p1 to last winner on start this makes no real difference overall just stops undefined behavoir on first run of nextTurn()    
+        this.lastWinner = this.p1
+
+        this.war = false;
     }
 
     /**
      * Goes through the next turn of each move 
      */
     nextTurn() {
-        console.log("Player 1",this.players.get(1), "Player 2", this.players.get(2) ,"Player 3", this.players.get(3))
+        let winner = 0; 
+
+        //this is akwards but necessary to make war take another turn for smooth animations
+        //shes a smooooothhh operatorrrrr 
+        if (this.war) {
+            winner = this._war();
+            if (winner == -1) {
+                //handle case of a multiple wars 
+                return;
+            }
+            this.lastWinner = this.players.get(winner);
+            return;
+        }
+
+        console.log("Player 1",this.players.get(1).cards, "Player 2", this.players.get(2).cards ,"Player 3", this.players.get(3).cards)
+        //offset is y distance this just makes sure cards arent stacked all on eachother
+        let offset = 0;
+        //go through animating cards to stop there animations and add it to winner pile
+        for (let card of this.cardsToAnimate) {
+            //stop animations needed to move cards properly
+            card.stopAnimations()
+
+            //move cards to correct pile location
+            card.mesh.position.set(this.lastWinner.position.x, this.lastWinner.position.y + offset, this.lastWinner.position.z)
+            //set rotation of cards correctly 
+            card.mesh.quaternion.copy(this.lastWinner.quaternion)
+            offset += 0.05;
+
+            //remake animation clips to avoid issues
+            card.addAnimationClips()
+            //push card to winners cards 
+            this.lastWinner.cards.push(card)
+        }
+        this.cardsToAnimate = []
+
+        //this may be causing issues with gaps in deck
+        for (let card of this.lastWinner.cards) {
+            card.mesh.translateZ(-0.05); //bump each card up since we got new cards
+        }
 
         //check if players still has cards
         for (let player of this.players.values()) {
@@ -73,24 +130,28 @@ class Game {
             console.error("Player: ", this.players.keys().next().value, "wins! ")
             return;
         }
-
+        
         //have index 0 be null so player 1 is index one etc
         let playerCards = [null]
 
         //if player is not in game create a card with -1 rank to compare so logic still works 
-        for (let player of this.players.values()) {
+        for (let i = 1; i < 4; i++) {
+            let player = this.players.get(i);
             if (player.isInGame) {
                 //pop card off of players deck
-                playerCards.push(player.cards.shift())
+                let nextCard = player.cards.shift()
+                playerCards.push(nextCard)
+                console.log("player ", player.number, "next card ", nextCard)
+
+                //play animation 
+                nextCard.playCardAnimation(player.number)
+                this.cardsToAnimate.push(nextCard)
             }
             else {
-                playerCards.push(new Card(-1, -1, -1, 0, 0))
+                playerCards.push(new Card(-1, -1, 0, 0))
             }
         }
-
-        console.log("p1 card", playerCards[1], "p2 card", playerCards[2], "p3 card", playerCards[3])
-
-        let winner = 0; 
+        
         //logic to check for winner 
         if (playerCards[1].rank > playerCards[2].rank && playerCards[1].rank > playerCards[3].rank) {
             winner = 1;
@@ -107,21 +168,12 @@ class Game {
         //no winner meaning WAR
         else {
             console.warn("WAR...what is it good for absolutely nothing!")
-            let winnerTuple = this._war()
-            //get winner
-            winner = winnerTuple[0]
-            //push war cards to playerCards
-            playerCards.push(...winnerTuple[1])
+            //set war to true we are in a war!
+            this.war = true;
         }
 
-        //get winner and push cards to winner
-        let winningPlayer  = this.players.get(winner)
-        for (let card of playerCards) {
-            //check if card not falsy(null, 0, "", NaN, etc) and rank is not -1 before adding it to winner's deck
-            if (card && card.rank != -1) {
-                winningPlayer.cards.push(card)
-            }
-        }
+        //set winner 
+        this.lastWinner = this.players.get(winner)
     }
 
     /**
@@ -132,7 +184,6 @@ class Game {
         //cards of war 
         let playerCards = [];
         //remaining cards if player runs out of cards during war 
-        let remainingCards = [];
 
         for (let player of this.players.values()) {
             //if player has enough cards to play war 
@@ -141,53 +192,88 @@ class Game {
                 if (player.isInGame) {
                     player.isInGame = false;
                     this.numPlayers -= 1;
-                    
-                    for (let card of playerCards){
-                        remainingCards.push(card)
+                    //add the remaining cards as a face down animaiton
+                    for (let card of player.cards){
+                        card.warFaceDownAnimation(player.number)
+                        this.cardsToAnimate.push(card)
                     }
                 }
 
                 playerCards.push(null)
-                playerCards.push(new Card(-1, -1, -1, 0, 0))
+                playerCards.push(new Card(-1, -1, 0, 0))
             }
             else if (player.isInGame) {
-                playerCards.push(player.cards.shift())
-                playerCards.push(player.cards.shift())
+                let faceDownCard = player.cards.shift()
+                let faceUpCard = player.cards.shift()
+
+                playerCards.push(faceDownCard,faceUpCard)
+
+                //play animations for cards
+                faceUpCard.playCardAnimation(player.number)
+                faceDownCard.warFaceDownAnimation(player.number)
+                this.cardsToAnimate.push(faceDownCard, faceUpCard)
             }
         }
 
         console.log("war cards", playerCards)
         if (playerCards[1].rank > playerCards[3].rank && playerCards[1].rank > playerCards[5].rank) {
-            //add cards to winner
             console.log("p1 wins WAR")
-            return [1, playerCards]
+            this.war = false;
+            return 1
 
         }
         else if (playerCards[3].rank > playerCards[1].rank && playerCards[3].rank > playerCards[5].rank) {
             console.log("p2 wins WAR")
-            return [2, playerCards]
+            this.war = false;
+            return 2
         }
         else if (playerCards[5].rank > playerCards[1].rank && playerCards[5].rank > playerCards[3].rank) {
             console.log("p3 wins WAR")
-            return [3, playerCards]
+            this.war = false; 
+            return 3
         }
         //no winner do war again 
         else {
             console.warn("GIVE ME AN F  GIVE ME A U  GIVE ME A C GIVE ME A K WHATS THAT SPELL...well 1,2,3 what are we fighting for ")
-            let winnerTuple = this._war()
-            //add war cards to playerCards
-            playerCards.push(...winnerTuple[1])
-            playerCards.push(...remainingCards)
-            return [winnerTuple[0], playerCards]
+            this.war = true    
+            return -1;        
+            //return this._war()
+        }
+    }
+
+    //updates mixers for any cards currently animating 
+    updateAnimations(delta) {
+        for (let card of this.cardsToAnimate) {
+            card.mixer.update(delta)
         }
     }
 }
 
+/**
+ * Player represents a player in the game 
+ */
 class Player {
-    constructor(playerNumber, cards) {
+    constructor(playerNumber, cards, position) {
+        //player number 1, 2, 3
         this.number = playerNumber
+        //subset of deck players has
         this.cards = cards;
+        //Keep track of if player has lost
         this.isInGame = true;
+        //position of players pile of cards
+        this.position = position
+
+        //copy rotation of first card essentially this is rotation of our pile 
+        this.quaternion = null;
+    }
+
+    /**
+     * Call this after setting up the pile of cards for the player
+     * Internally we are saving the rotations of the pile
+     */
+    setPlayerRotation() {
+        this.quaternion = new THREE.Quaternion()
+        this.quaternion.copy(this.cards[0].mesh.quaternion)
     }
 }
 

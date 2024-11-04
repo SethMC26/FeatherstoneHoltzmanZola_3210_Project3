@@ -27,21 +27,18 @@ const Ranks = Object.freeze({
 class Deck {
     constructor(scene) {
         this.cards = [];
-        let id = 0;
 
         //code below from ChatGPT
         for (const suit in Suits) {
             for (const rank in Ranks) {
                 //if (id >= numCards) return; // Stops adding cards if deck limit is reached
-                const card = new Card(id, Suits[suit], Ranks[rank]);
+                const card = new Card(Suits[suit], Ranks[rank]);
                 this.cards.push(card);
 
                 // Position cards in a stack
-                card.mesh.rotateX(-Math.PI/2)
+                card.mesh.rotateX(Math.PI/2)
 
-                card.setPosition(0, id * 0.08 + 15, 0);
                 card.addToScene(scene);
-                id++;
             }
         }
     }
