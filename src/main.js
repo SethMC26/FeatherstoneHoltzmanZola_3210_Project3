@@ -55,7 +55,7 @@ let ambientLightOn = true;
 
 
 // Directional light above the table for stronger shadow casting
-const tableLight = new THREE.DirectionalLight(0xFFFFFF, 1);
+const tableLight = new THREE.PointLight(0xFFFFFF, 1, 50);
 tableLight.position.set(0, 50, 0);
 tableLight.castShadow = true;
 tableLight.shadow.mapSize.width = 2048;
@@ -74,6 +74,8 @@ const clock = new THREE.Clock();
 const game = new Game(scene);
 
 let shadowsOn = true;
+
+let pointLightOn = true;
 
 
 
@@ -142,10 +144,10 @@ function keyHandler(e) {
             ambientLight.visible = ambientLightOn;
             break;
         case "p":
-            tableLightOn = !tableLightOn;
-            tableLight.visible = tableLightOn;
-            lightHelper.visible = tableLightOn;
-            break;
+            pointLightOn = !pointLightOn;
+            tableLight.visible = pointLightOn; // Toggle visibility
+            console.log(`Point light toggled: ${pointLightOn}`); // Log light toggle state
+            break;l
         case "m":
             shadowsOn = !shadowsOn;
             tableLight.castShadow = shadowsOn;
