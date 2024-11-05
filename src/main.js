@@ -21,32 +21,62 @@ renderer.setClearColor(0x000000);
 //renderer.setPixelRatio(document.getElementById('myCanvas').devicePixelRatio);
 // If you want the render to span the window, uncomment this
 renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 document.body.appendChild(renderer.domElement);
 
 //basic controls for testing 
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.update();
 
-//basic light to see materials
-let light = new THREE.AmbientLight(0xFFFFFF, 1)
-scene.add(light)
-
 //create a new table with size 16 (size scaling is still WIP)
-let table = new Table(16);
-//add tableGroup(all objects of table)
+const table = new Table(16);
+table.tableGroup.traverse((object) => {
+    if (object.isMesh) {
+        object.castShadow = true;
+    }
+});
 scene.add(table.tableGroup);
 
 //create floor
-let floor = new Floor(16);
-scene.add(floor.mesh)
+const floor = new Floor(16);
+floor.mesh.receiveShadow = true;
+scene.add(floor.mesh);
 
-// Basic light to see materials
-const light2 = new THREE.AmbientLight(0xffffff, 1);
-scene.add(light2);
+// Enable shadow maps on the renderer
+renderer.shadowMap.enabled = true;
+
+// Ambient light with initial blue color
+const ambientLight = new THREE.AmbientLight(0xf59a40, 1);
+scene.add(ambientLight);
+let ambientLightOn = true;
+
+
+// Directional light above the table for stronger shadow casting
+const tableLight = new THREE.PointLight(0xFFFFFF, 10000);
+tableLight.position.set(0, 30, 0);
+tableLight.castShadow = true;
+tableLight.shadow.mapSize.width = 2048;
+tableLight.shadow.mapSize.height = 2048;
+tableLight.shadow.camera.near = 10;
+tableLight.shadow.camera.far = 100;
+tableLight.shadow.camera.left = -30;
+tableLight.shadow.camera.right = 30;
+tableLight.shadow.camera.top = 30;
+tableLight.shadow.camera.bottom = -30;
+scene.add(tableLight);
+
 
 const clock = new THREE.Clock();
 
 const game = new Game(scene);
+
+let shadowsOn = true;
+
+let pointLightOn = true;
+
+const lightMoveStep = 5;
+
 
 /* for testing new animations 
 let card = new Card(2, 11)
@@ -81,8 +111,8 @@ function animate() {
     const delta = clock.getDelta();
     //mixer.update(delta)
     //update animations 
-    game.updateAnimations( delta )
-    controls.update(); 
+    game.updateAnimations(delta)
+    controls.update();
     renderer.render(scene, camera);
 
     requestAnimationFrame(animate);
@@ -100,15 +130,48 @@ window.addEventListener('resize', () => {
 
 // Simple way to setup keybaord controls:
 function keyHandler(e) {
-    switch(e.key){
-        case "n":
-            game.nextTurn()
-            break;
+    switch (e.key) {
+
         /*
         case "t":
             card.mesh.position.set(0,10,0)
             break;
         */
+        case "w":
+            tableLight.position.z -= lightMoveStep;
+            break;
+        case "s":
+            tableLight.position.z += lightMoveStep;
+            break;
+        case "a":
+            tableLight.position.x -= lightMoveStep;
+            break;
+        case "d":
+            tableLight.position.x += lightMoveStep;
+            break;
+
+        case "l":
+            ambientLightOn = !ambientLightOn;
+            ambientLight.visible = ambientLightOn;
+            break;
+        case "p":
+            pointLightOn = !pointLightOn;
+            tableLight.visible = pointLightOn;
+            console.log(`Point light toggled: ${pointLightOn}`);
+            break;
+        case "m":
+            shadowsOn = !shadowsOn;
+            tableLight.castShadow = shadowsOn;
+            floor.mesh.receiveShadow = shadowsOn;
+            table.tableGroup.traverse((object) => {
+                if (object.isMesh) object.castShadow = shadowsOn;
+            });
+            console.log(`Shadow on toggled: ${shadowsOn}`);
+            break;
+
+        case "n":
+            game.nextTurn()
+            break;
     }
-  }
-  document.addEventListener( "keydown", keyHandler, false );
+}
+document.addEventListener("keydown", keyHandler, false);
