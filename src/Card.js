@@ -164,6 +164,33 @@ class Card {
     }
 
     /**
+     * Plays animation of cards going to winner pile
+     * 
+     * @param {THRE.Vector3} winnerPos Winner deck vector
+     * @param {THREE.Quaternion} winnerQuaternion Winner deck Quaternion
+     */
+    playWinnerClip(winnerPos, winnerQuaternion) {
+        let clip = this._createAnimationClip(
+        [
+            0, 12.5 , 0,
+            winnerPos.x/2 +  THREE.MathUtils.randFloatSpread(10), winnerPos.y + THREE.MathUtils.randFloat(0,15), winnerPos.z/2 +  THREE.MathUtils.randFloatSpread(10),
+            winnerPos.x, winnerPos.y, winnerPos.z,
+        ],
+        [
+            this.mesh.quaternion.x, this.mesh.quaternion.y, this.mesh.quaternion.z, this.mesh.quaternion.w,
+            -winnerQuaternion.x, winnerQuaternion.y, winnerQuaternion.z, winnerQuaternion.w,
+            winnerQuaternion.x, winnerQuaternion.y, winnerQuaternion.z, winnerQuaternion.w
+        ]
+        )
+
+        this.moveToWinner = this.mixer.clipAction(clip);
+        this.moveToWinner.loop = THREE.LoopOnce
+        this.moveToWinner.clampWhenFinished = true;
+
+        this.moveToWinner.play();
+    }
+
+    /**
      * Starts war face down card animation
      * @param {Number} playerNumber number of player doing animation(1, 2, 3)
      */

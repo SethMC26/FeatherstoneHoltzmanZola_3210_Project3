@@ -65,6 +65,9 @@ class Game {
 
         //list of cards to animate 
         this.cardsToAnimate = []
+        //animation list of cards going to winner pile 
+        this.winnerCardsToAnimate = []
+        this.animationWinner
         //set p1 to last winner on start this makes no real difference overall just stops undefined behavoir on first run of nextTurn()    
         this.lastWinner = this.p1
 
@@ -90,18 +93,26 @@ class Game {
         }
 
         console.log("Player 1",this.players.get(1).cards, "Player 2", this.players.get(2).cards ,"Player 3", this.players.get(3).cards)
-        //offset is y distance this just makes sure cards arent stacked all on eachother
+        //stop moving cards from last turn to avoid issues and set proper z value  
         let offset = 0;
+        for (let card of this.winnerCardsToAnimate) {
+            card.moveToWinner.stop();
+            card.mesh.position.set(this.animationWinner.position.x, this.animationWinner.position.y + offset, this.animationWinner.position.z)
+            card.mesh.quaternion.copy(this.animationWinner.quaternion)
+            offset += 0.05 
+        }
+        this.winnerCardsToAnimate = [];
+
         //go through animating cards to stop there animations and add it to winner pile
         for (let card of this.cardsToAnimate) {
             //stop animations needed to move cards properly
             card.stopAnimations()
 
-            //move cards to correct pile location
-            card.mesh.position.set(this.lastWinner.position.x, this.lastWinner.position.y + offset, this.lastWinner.position.z)
-            //set rotation of cards correctly 
-            card.mesh.quaternion.copy(this.lastWinner.quaternion)
-            offset += 0.05;
+            //play animation moving to winner
+            this.animationWinner = this.lastWinner
+            let winnerPos = this.lastWinner.position
+            card.playWinnerClip(winnerPos, this.lastWinner.quaternion);
+            this.winnerCardsToAnimate.push(card);
 
             //remake animation clips to avoid issues
             card.addAnimationClips()
@@ -254,6 +265,10 @@ class Game {
     //updates mixers for any cards currently animating 
     updateAnimations(delta) {
         for (let card of this.cardsToAnimate) {
+            card.mixer.update(delta)
+        }
+
+        for (let card of this.winnerCardsToAnimate) {
             card.mixer.update(delta)
         }
     }
