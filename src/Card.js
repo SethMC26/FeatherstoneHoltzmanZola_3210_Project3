@@ -312,8 +312,29 @@ class Card {
             });
         }
 
+        if (value == 11 && suit ==0) {
+            var material = new THREE.MeshBasicMaterial({
+                map: loader.load('textures/Ace-Jack/jack_of_hearts.png')
+            });
+        }
 
+        if (value == 11 && suit ==1) {
+            var material = new THREE.MeshBasicMaterial({
+                map: loader.load('textures/Ace-Jack/jack_of_diamonds.png')
+            });
+        }
 
+        if (value == 11 && suit ==2) {
+            var material = new THREE.MeshBasicMaterial({
+                map: loader.load('textures/Ace-Jack/jack_of_clubs.png')
+            });
+        }
+
+        if (value == 11 && suit ==3) {
+            var material = new THREE.MeshBasicMaterial({
+                map: loader.load('textures/Ace-Jack/jack_of_spades.png')
+            });
+        }
 
 
 
