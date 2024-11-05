@@ -336,6 +336,150 @@ class Card {
             });
         }
 
+        if (value == 10 && suit ==0) {
+            var material = new THREE.MeshBasicMaterial({
+                map: loader.load('textures/10-5/10_of_hearts.png')
+            });
+        }
+
+        if (value == 10 && suit ==1) {
+            var material = new THREE.MeshBasicMaterial({
+                map: loader.load('textures/10-5/10_of_diamonds.png')
+            });
+        }
+
+        if (value == 10 && suit ==2) {
+            var material = new THREE.MeshBasicMaterial({
+                map: loader.load('textures/10-5/10_of_clubs.png')
+            });
+        }
+
+        if (value == 10 && suit ==3) {
+            var material = new THREE.MeshBasicMaterial({
+                map: loader.load('textures/10-5/10_of_spades.png')
+            });
+        }
+
+        if (value == 9 && suit ==0) {
+            var material = new THREE.MeshBasicMaterial({
+                map: loader.load('textures/10-5/9_of_hearts.png')
+            });
+        }
+
+        if (value == 9 && suit ==1) {
+            var material = new THREE.MeshBasicMaterial({
+                map: loader.load('textures/10-5/9_of_diamonds.png')
+            });
+        }
+
+        if (value == 9 && suit ==2) {
+            var material = new THREE.MeshBasicMaterial({
+                map: loader.load('textures/10-5/9_of_clubs.png')
+            });
+        }
+
+        if (value == 9 && suit ==3) {
+            var material = new THREE.MeshBasicMaterial({
+                map: loader.load('textures/10-5/9_of_spades.png')
+            });
+        }
+
+        if (value == 8 && suit ==0) {
+            var material = new THREE.MeshBasicMaterial({
+                map: loader.load('textures/10-5/8_of_hearts.png')
+            });
+        }
+
+        if (value == 8 && suit ==1) {
+            var material = new THREE.MeshBasicMaterial({
+                map: loader.load('textures/10-5/8_of_diamonds.png')
+            });
+        }
+
+        if (value == 8 && suit ==2) {
+            var material = new THREE.MeshBasicMaterial({
+                map: loader.load('textures/10-5/8_of_clubs.png')
+            });
+        }
+
+        if (value == 8 && suit ==3) {
+            var material = new THREE.MeshBasicMaterial({
+                map: loader.load('textures/10-5/8_of_spades.png')
+            });
+        }
+
+        if (value == 7 && suit ==0) {
+            var material = new THREE.MeshBasicMaterial({
+                map: loader.load('textures/10-5/7_of_hearts.png')
+            });
+        }
+
+        if (value == 7 && suit ==1) {
+            var material = new THREE.MeshBasicMaterial({
+                map: loader.load('textures/10-5/7_of_diamonds.png')
+            });
+        }
+
+        if (value == 7 && suit ==2) {
+            var material = new THREE.MeshBasicMaterial({
+                map: loader.load('textures/10-5/7_of_clubs.png')
+            });
+        }
+
+        if (value == 7 && suit ==3) {
+            var material = new THREE.MeshBasicMaterial({
+                map: loader.load('textures/10-5/7_of_spades.png')
+            });
+        }
+
+        if (value == 6 && suit ==0) {
+            var material = new THREE.MeshBasicMaterial({
+                map: loader.load('textures/10-5/6_of_hearts.png')
+            });
+        }
+
+        if (value == 6 && suit ==1) {
+            var material = new THREE.MeshBasicMaterial({
+                map: loader.load('textures/10-5/6_of_diamonds.png')
+            });
+        }
+
+        if (value == 6 && suit ==2) {
+            var material = new THREE.MeshBasicMaterial({
+                map: loader.load('textures/10-5/6_of_clubs.png')
+            });
+        }
+
+        if (value == 6 && suit ==3) {
+            var material = new THREE.MeshBasicMaterial({
+                map: loader.load('textures/10-5/6_of_spades.png')
+            });
+        }
+
+        if (value == 5 && suit ==0) {
+            var material = new THREE.MeshBasicMaterial({
+                map: loader.load('textures/5-2/5_of_hearts.png')
+            });
+        }
+
+        if (value == 5 && suit ==1) {
+            var material = new THREE.MeshBasicMaterial({
+                map: loader.load('textures/5-2/5_of_diamonds.png')
+            });
+        }
+
+        if (value == 5 && suit ==2) {
+            var material = new THREE.MeshBasicMaterial({
+                map: loader.load('textures/5-2/5_of_clubs.png')
+            });
+        }
+
+        if (value == 5 && suit ==3) {
+            var material = new THREE.MeshBasicMaterial({
+                map: loader.load('textures/5-2/5_of_spades.png')
+            });
+        }
+
 
 
         return material;
