@@ -8,19 +8,12 @@ class Card {
         this.suit = suit;
         this.rank = rank;
 
-        //texture should be loaded in not sure how this would work 
-        //const texture = new THREE.CanvasTexture(canvas);
-
         // Create front and back materials
 
         var loader = new THREE.TextureLoader();
 
-        //const frontMaterial = new THREE.MeshBasicMaterial({ color: 0xFF0000 });
         const frontMaterial = this.loadCorrectTexture(suit, rank, loader)
-        const backMaterial = new THREE.MeshBasicMaterial({ color: 0x8f542c });
-
-        //code below doesnt seem to work?
-        //const materials = [backMaterial, frontMaterial];
+        const backMaterial = new THREE.MeshPhongMaterial({ color: 0x8f542c });
 
         // Geometry and mesh
         const geometry = new THREE.PlaneGeometry(width, height);
@@ -41,6 +34,8 @@ class Card {
         // Add both faces to the group
         this.mesh.add(frontFace);
         this.mesh.add(backFace);
+
+        this.mesh.castShadow = true;
 
         //create animation mixer to control playing of animations
         this.mixer = new THREE.AnimationMixer(this.mesh);
@@ -239,25 +234,25 @@ class Card {
     loadCorrectTexture(suit, value, loader) {
 
         if (value == 14 && suit == 0) {
-            var material = new THREE.MeshBasicMaterial({
+            var material = new THREE.MeshPhongMaterial({
                 map: loader.load('textures/cards/ace_of_hearts.png')
             });
         }
 
             if (value == 14 && suit == 1) {
-                var material = new THREE.MeshBasicMaterial({
+                var material = new THREE.MeshPhongMaterial({
                     map: loader.load('textures/cards/ace_of_diamonds.png')
                 });
             }
 
         if (value == 14 && suit == 2) {
-            var material = new THREE.MeshBasicMaterial({
+            var material = new THREE.MeshPhongMaterial({
                 map: loader.load('textures/cards/ace_of_clubs.png')
             });
         }
        
         if (value == 14 && suit ==3) {
-            var material = new THREE.MeshBasicMaterial({
+            var material = new THREE.MeshPhongMaterial({
                 map: loader.load('textures/cards/ace_of_spades.png')
             });
         }
@@ -265,289 +260,289 @@ class Card {
         
 
         if (value == 13 && suit == 0) {
-            var material = new THREE.MeshBasicMaterial({
+            var material = new THREE.MeshPhongMaterial({
                 map: loader.load('textures/cards/king_of_hearts.png')
             });
         }
 
         if (value == 13 && suit ==1) {
-            var material = new THREE.MeshBasicMaterial({
+            var material = new THREE.MeshPhongMaterial({
                 map: loader.load('textures/cards/king_of_diamonds.png')
             });
         }
 
         if (value == 13 && suit ==2) {
-            var material = new THREE.MeshBasicMaterial({
+            var material = new THREE.MeshPhongMaterial({
                 map: loader.load('textures/cards/king_of_clubs.png')
             });
         }
 
         if (value == 13 && suit ==3) {
-            var material = new THREE.MeshBasicMaterial({
+            var material = new THREE.MeshPhongMaterial({
                 map: loader.load('textures/cards/king_of_spades.png')
             });
         }
 
         if (value == 12 && suit ==0) {
-            var material = new THREE.MeshBasicMaterial({
+            var material = new THREE.MeshPhongMaterial({
                 map: loader.load('textures/cards/queen_of_hearts.png')
             });
         }
 
         if (value == 12 && suit ==1) {
-            var material = new THREE.MeshBasicMaterial({
+            var material = new THREE.MeshPhongMaterial({
                 map: loader.load('textures/cards/queen_of_diamonds.png')
             });
         }
 
         if (value == 12 && suit ==2) {
-            var material = new THREE.MeshBasicMaterial({
+            var material = new THREE.MeshPhongMaterial({
                 map: loader.load('textures/cards/queen_of_clubs.png')
             });
         }
 
         if (value == 12 && suit ==3) {
-            var material = new THREE.MeshBasicMaterial({
+            var material = new THREE.MeshPhongMaterial({
                 map: loader.load('textures/cards/queen_of_spades.png')
             });
         }
 
         if (value == 11 && suit ==0) {
-            var material = new THREE.MeshBasicMaterial({
+            var material = new THREE.MeshPhongMaterial({
                 map: loader.load('textures/Ace-Jack/jack_of_hearts.png')
             });
         }
 
         if (value == 11 && suit ==1) {
-            var material = new THREE.MeshBasicMaterial({
+            var material = new THREE.MeshPhongMaterial({
                 map: loader.load('textures/Ace-Jack/jack_of_diamonds.png')
             });
         }
 
         if (value == 11 && suit ==2) {
-            var material = new THREE.MeshBasicMaterial({
+            var material = new THREE.MeshPhongMaterial({
                 map: loader.load('textures/Ace-Jack/jack_of_clubs.png')
             });
         }
 
         if (value == 11 && suit ==3) {
-            var material = new THREE.MeshBasicMaterial({
+            var material = new THREE.MeshPhongMaterial({
                 map: loader.load('textures/Ace-Jack/jack_of_spades.png')
             });
         }
 
         if (value == 10 && suit ==0) {
-            var material = new THREE.MeshBasicMaterial({
+            var material = new THREE.MeshPhongMaterial({
                 map: loader.load('textures/10-5/10_of_hearts.png')
             });
         }
 
         if (value == 10 && suit ==1) {
-            var material = new THREE.MeshBasicMaterial({
+            var material = new THREE.MeshPhongMaterial({
                 map: loader.load('textures/10-5/10_of_diamonds.png')
             });
         }
 
         if (value == 10 && suit ==2) {
-            var material = new THREE.MeshBasicMaterial({
+            var material = new THREE.MeshPhongMaterial({
                 map: loader.load('textures/10-5/10_of_clubs.png')
             });
         }
 
         if (value == 10 && suit ==3) {
-            var material = new THREE.MeshBasicMaterial({
+            var material = new THREE.MeshPhongMaterial({
                 map: loader.load('textures/10-5/10_of_spades.png')
             });
         }
 
         if (value == 9 && suit ==0) {
-            var material = new THREE.MeshBasicMaterial({
+            var material = new THREE.MeshPhongMaterial({
                 map: loader.load('textures/10-5/9_of_hearts.png')
             });
         }
 
         if (value == 9 && suit ==1) {
-            var material = new THREE.MeshBasicMaterial({
+            var material = new THREE.MeshPhongMaterial({
                 map: loader.load('textures/10-5/9_of_diamonds.png')
             });
         }
 
         if (value == 9 && suit ==2) {
-            var material = new THREE.MeshBasicMaterial({
+            var material = new THREE.MeshPhongMaterial({
                 map: loader.load('textures/10-5/9_of_clubs.png')
             });
         }
 
         if (value == 9 && suit ==3) {
-            var material = new THREE.MeshBasicMaterial({
+            var material = new THREE.MeshPhongMaterial({
                 map: loader.load('textures/10-5/9_of_spades.png')
             });
         }
 
         if (value == 8 && suit ==0) {
-            var material = new THREE.MeshBasicMaterial({
+            var material = new THREE.MeshPhongMaterial({
                 map: loader.load('textures/10-5/8_of_hearts.png')
             });
         }
 
         if (value == 8 && suit ==1) {
-            var material = new THREE.MeshBasicMaterial({
+            var material = new THREE.MeshPhongMaterial({
                 map: loader.load('textures/10-5/8_of_diamonds.png')
             });
         }
 
         if (value == 8 && suit ==2) {
-            var material = new THREE.MeshBasicMaterial({
+            var material = new THREE.MeshPhongMaterial({
                 map: loader.load('textures/10-5/8_of_clubs.png')
             });
         }
 
         if (value == 8 && suit ==3) {
-            var material = new THREE.MeshBasicMaterial({
+            var material = new THREE.MeshPhongMaterial({
                 map: loader.load('textures/10-5/8_of_spades.png')
             });
         }
 
         if (value == 7 && suit ==0) {
-            var material = new THREE.MeshBasicMaterial({
+            var material = new THREE.MeshPhongMaterial({
                 map: loader.load('textures/10-5/7_of_hearts.png')
             });
         }
 
         if (value == 7 && suit ==1) {
-            var material = new THREE.MeshBasicMaterial({
+            var material = new THREE.MeshPhongMaterial({
                 map: loader.load('textures/10-5/7_of_diamonds.png')
             });
         }
 
         if (value == 7 && suit ==2) {
-            var material = new THREE.MeshBasicMaterial({
+            var material = new THREE.MeshPhongMaterial({
                 map: loader.load('textures/10-5/7_of_clubs.png')
             });
         }
 
         if (value == 7 && suit ==3) {
-            var material = new THREE.MeshBasicMaterial({
+            var material = new THREE.MeshPhongMaterial({
                 map: loader.load('textures/10-5/7_of_spades.png')
             });
         }
 
         if (value == 6 && suit ==0) {
-            var material = new THREE.MeshBasicMaterial({
+            var material = new THREE.MeshPhongMaterial({
                 map: loader.load('textures/10-5/6_of_hearts.png')
             });
         }
 
         if (value == 6 && suit ==1) {
-            var material = new THREE.MeshBasicMaterial({
+            var material = new THREE.MeshPhongMaterial({
                 map: loader.load('textures/10-5/6_of_diamonds.png')
             });
         }
 
         if (value == 6 && suit ==2) {
-            var material = new THREE.MeshBasicMaterial({
+            var material = new THREE.MeshPhongMaterial({
                 map: loader.load('textures/10-5/6_of_clubs.png')
             });
         }
 
         if (value == 6 && suit ==3) {
-            var material = new THREE.MeshBasicMaterial({
+            var material = new THREE.MeshPhongMaterial({
                 map: loader.load('textures/10-5/6_of_spades.png')
             });
         }
 
         if (value == 5 && suit ==0) {
-            var material = new THREE.MeshBasicMaterial({
+            var material = new THREE.MeshPhongMaterial({
                 map: loader.load('textures/5-2/5_of_hearts.png')
             });
         }
 
         if (value == 5 && suit ==1) {
-            var material = new THREE.MeshBasicMaterial({
+            var material = new THREE.MeshPhongMaterial({
                 map: loader.load('textures/5-2/5_of_diamonds.png')
             });
         }
 
         if (value == 5 && suit ==2) {
-            var material = new THREE.MeshBasicMaterial({
+            var material = new THREE.MeshPhongMaterial({
                 map: loader.load('textures/5-2/5_of_clubs.png')
             });
         }
 
         if (value == 5 && suit ==3) {
-            var material = new THREE.MeshBasicMaterial({
+            var material = new THREE.MeshPhongMaterial({
                 map: loader.load('textures/5-2/5_of_spades.png')
             });
         }
 
         if (value == 4 && suit ==0) {
-            var material = new THREE.MeshBasicMaterial({
+            var material = new THREE.MeshPhongMaterial({
                 map: loader.load('textures/5-2/4_of_hearts.png')
             });
         }
 
         if (value == 4 && suit ==1) {
-            var material = new THREE.MeshBasicMaterial({
+            var material = new THREE.MeshPhongMaterial({
                 map: loader.load('textures/5-2/4_of_diamonds.png')
             });
         }
 
         if (value == 4 && suit ==2) {
-            var material = new THREE.MeshBasicMaterial({
+            var material = new THREE.MeshPhongMaterial({
                 map: loader.load('textures/5-2/4_of_clubs.png')
             });
         }
 
         if (value == 4 && suit ==3) {
-            var material = new THREE.MeshBasicMaterial({
+            var material = new THREE.MeshPhongMaterial({
                 map: loader.load('textures/5-2/4_of_spades.png')
             });
         }
 
         if (value == 3 && suit ==0) {
-            var material = new THREE.MeshBasicMaterial({
+            var material = new THREE.MeshPhongMaterial({
                 map: loader.load('textures/5-2/3_of_hearts.png')
             });
         }
 
         if (value == 3 && suit ==1) {
-            var material = new THREE.MeshBasicMaterial({
+            var material = new THREE.MeshPhongMaterial({
                 map: loader.load('textures/5-2/3_of_diamonds.png')
             });
         }
 
         if (value == 3 && suit ==2) {
-            var material = new THREE.MeshBasicMaterial({
+            var material = new THREE.MeshPhongMaterial({
                 map: loader.load('textures/5-2/3_of_clubs.png')
             });
         }
 
         if (value == 3 && suit ==3) {
-            var material = new THREE.MeshBasicMaterial({
+            var material = new THREE.MeshPhongMaterial({
                 map: loader.load('textures/5-2/3_of_spades.png')
             });
         }
 
         if (value == 2 && suit ==0) {
-            var material = new THREE.MeshBasicMaterial({
+            var material = new THREE.MeshPhongMaterial({
                 map: loader.load('textures/5-2/2_of_hearts.png')
             });
         }
 
         if (value == 2 && suit ==1) {
-            var material = new THREE.MeshBasicMaterial({
+            var material = new THREE.MeshPhongMaterial({
                 map: loader.load('textures/5-2/2_of_diamonds.png')
             });
         }
 
         if (value == 2 && suit ==2) {
-            var material = new THREE.MeshBasicMaterial({
+            var material = new THREE.MeshPhongMaterial({
                 map: loader.load('textures/5-2/2_of_clubs.png')
             });
         }
 
         if (value == 2 && suit ==3) {
-            var material = new THREE.MeshBasicMaterial({
+            var material = new THREE.MeshPhongMaterial({
                 map: loader.load('textures/5-2/2_of_spades.png')
             });
         }

@@ -66,6 +66,7 @@ class Table {
             normalMap: normalTexutre
         });
         const top = new THREE.Mesh( topGeom, topMat);
+        top.receiveShadow = true;
         top.translateY( 0.5 * scale);
 
         this.tableGroup.add(top);
