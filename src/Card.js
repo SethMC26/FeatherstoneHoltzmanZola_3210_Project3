@@ -12,9 +12,7 @@ class Card {
         //const texture = new THREE.CanvasTexture(canvas);
 
         // Create front and back materials
-        
-        const frontMaterial = new THREE.MeshPhongMaterial({ color: 0xFF0000 });
-        const backMaterial = new THREE.MeshPhongMaterial({ color: 0x8f542c });
+      
         
         //code below doesnt seem to work?
         //const materials = [backMaterial, frontMaterial];
