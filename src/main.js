@@ -170,7 +170,12 @@ function keyHandler(e) {
             break;
 
         case "n":
-            game.nextTurn()
+            if (game.isGameOn) {
+                game.nextTurn()
+            }
+            else {
+                console.log("Game is over")
+            }
             break;
     }
 }

@@ -111,8 +111,18 @@ class Game {
         this.cardsToAnimate = []
 
         //this may be causing issues with gaps in deck
-        for (let card of this.lastWinner.cards) {
-            card.mesh.translateZ(-0.05); //bump each card up since we got new cards
+        for (let i = 1; i < 4; i++) {
+            let offset = 0;
+            if (i != this.lastWinner.number) {
+                offset = 0.05
+            }
+            else {
+                offset = -0.05
+            }
+
+            for (let card of this.players.get(i).cards) {
+                card.mesh.translateZ(offset);
+            }
         }
 
         //check if players still has cards
