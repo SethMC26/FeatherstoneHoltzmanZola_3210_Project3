@@ -47,7 +47,7 @@ scene.add(floor.mesh);
 renderer.shadowMap.enabled = true;
 
 // Ambient light with initial blue color
-const ambientLight = new THREE.AmbientLight(0x9200FF, 1);
+const ambientLight = new THREE.AmbientLight(0xf59a40, 1);
 scene.add(ambientLight);
 let ambientLightOn = true;
 
