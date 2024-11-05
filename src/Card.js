@@ -12,17 +12,20 @@ class Card {
         //const texture = new THREE.CanvasTexture(canvas);
 
         // Create front and back materials
-        
-        const frontMaterial = new THREE.MeshBasicMaterial({ color: 0xFF0000 });
+
+        var loader = new THREE.TextureLoader();
+
+        //const frontMaterial = new THREE.MeshBasicMaterial({ color: 0xFF0000 });
+        const frontMaterial = this.loadCorrectTexture(suit, rank, loader)
         const backMaterial = new THREE.MeshBasicMaterial({ color: 0x8f542c });
-        
+
         //code below doesnt seem to work?
         //const materials = [backMaterial, frontMaterial];
 
         // Geometry and mesh
         const geometry = new THREE.PlaneGeometry(width, height);
         //this.mesh = new THREE.Mesh( geometry, backMaterial);
-        
+
         // Create a group to hold the front and back of the card
         this.mesh = new THREE.Group();
 
@@ -56,113 +59,113 @@ class Card {
      */
     addAnimationClips() {
         //Create Axis for Quaternion angle 
-        let xAxis = new THREE.Vector3( 1 , 0, 0 );
+        let xAxis = new THREE.Vector3(1, 0, 0);
         //create final rotation quaternion 
-        let qFinal = new THREE.Quaternion().setFromAxisAngle( xAxis, Math.PI * 2);
+        let qFinal = new THREE.Quaternion().setFromAxisAngle(xAxis, Math.PI * 2);
         //add animations clips p1 move to center
         let clip = this._createAnimationClip(
             [
-            -25, 9.5, 0, 
-            -14.5, 15, 0, 
-            -7, 9.5, 0 
+                -25, 9.5, 0,
+                -14.5, 15, 0,
+                -7, 9.5, 0
             ],
             [
-                this.mesh.quaternion.x, this.mesh.quaternion.y, this.mesh.quaternion.z, this.mesh.quaternion.w, 
+                this.mesh.quaternion.x, this.mesh.quaternion.y, this.mesh.quaternion.z, this.mesh.quaternion.w,
                 qFinal.x, qFinal.y, qFinal.z, qFinal.w,
                 this.mesh.quaternion.x, this.mesh.quaternion.y, this.mesh.quaternion.z, this.mesh.quaternion.w
             ]
         )
         //add clip to create clip
-        this.faceDownP1 = this.mixer.clipAction( clip )
+        this.faceDownP1 = this.mixer.clipAction(clip)
         //only loop once 
         this.faceDownP1.loop = THREE.LoopOnce
         this.faceDownP1.clampWhenFinished = true;
-        
+
         //add animation clip p2 move to center
         clip = this._createAnimationClip(
             [
-                0 , 9.5, 25, 
-                0 , 15, 15, 
-                0, 9.5, 0 
+                0, 9.5, 25,
+                0, 15, 15,
+                0, 9.5, 0
             ],
             [
-                this.mesh.quaternion.x, this.mesh.quaternion.y, this.mesh.quaternion.z, this.mesh.quaternion.w, 
+                this.mesh.quaternion.x, this.mesh.quaternion.y, this.mesh.quaternion.z, this.mesh.quaternion.w,
                 qFinal.x, qFinal.y, qFinal.z, qFinal.w,
                 this.mesh.quaternion.x, this.mesh.quaternion.y, this.mesh.quaternion.z, this.mesh.quaternion.w
             ]
         )
-        
-        this.faceDownP2 = this.mixer.clipAction( clip ) 
+
+        this.faceDownP2 = this.mixer.clipAction(clip)
         this.faceDownP2.loop = THREE.LoopOnce
         this.faceDownP2.clampWhenFinished = true
 
         clip = this._createAnimationClip(
             [
-                25, 9.5, 0, 
-                15, 15, 0, 
-                7, 9.5, 0 
+                25, 9.5, 0,
+                15, 15, 0,
+                7, 9.5, 0
             ],
             [
-                this.mesh.quaternion.x, this.mesh.quaternion.y, this.mesh.quaternion.z, this.mesh.quaternion.w, 
+                this.mesh.quaternion.x, this.mesh.quaternion.y, this.mesh.quaternion.z, this.mesh.quaternion.w,
                 qFinal.x, qFinal.y, qFinal.z, qFinal.w,
                 this.mesh.quaternion.x, this.mesh.quaternion.y, this.mesh.quaternion.z, this.mesh.quaternion.w
             ]
         )
 
-        this.faceDownP3 = this.mixer.clipAction( clip )
+        this.faceDownP3 = this.mixer.clipAction(clip)
         this.faceDownP3.loop = THREE.LoopOnce
-        this.faceDownP3.clampWhenFinished = true; 
-        
+        this.faceDownP3.clampWhenFinished = true;
+
         //wars card move to center
         clip = this._createAnimationClip(
             [
-                -25, 9.5, 0, 
-                -14.5, 15, 0, 
+                -25, 9.5, 0,
+                -14.5, 15, 0,
                 -7, 12.5, 0
             ],
             [
-                this.mesh.quaternion.x, this.mesh.quaternion.y, this.mesh.quaternion.z, this.mesh.quaternion.w, 
+                this.mesh.quaternion.x, this.mesh.quaternion.y, this.mesh.quaternion.z, this.mesh.quaternion.w,
                 this.mesh.quaternion.x, -this.mesh.quaternion.y, -this.mesh.quaternion.z, this.mesh.quaternion.w,
                 qFinal.x, qFinal.y, qFinal.z, qFinal.w,
             ]
         )
-        this.playCardP1 = this.mixer.clipAction( clip )
+        this.playCardP1 = this.mixer.clipAction(clip)
         this.playCardP1.loop = THREE.LoopOnce
-        this.playCardP1.clampWhenFinished = true; 
+        this.playCardP1.clampWhenFinished = true;
 
         //war card move to center p2
         clip = this._createAnimationClip(
             [
-                0, 9.5, 25, 
-                0, 15, 15, 
-                0, 12.5, 0  
+                0, 9.5, 25,
+                0, 15, 15,
+                0, 12.5, 0
             ],
             [
-                this.mesh.quaternion.x, this.mesh.quaternion.y, this.mesh.quaternion.z, this.mesh.quaternion.w, 
+                this.mesh.quaternion.x, this.mesh.quaternion.y, this.mesh.quaternion.z, this.mesh.quaternion.w,
                 -this.mesh.quaternion.x, this.mesh.quaternion.y, this.mesh.quaternion.z, this.mesh.quaternion.w,
                 qFinal.x, qFinal.y, qFinal.z, qFinal.w,
             ]
         )
-        this.playCardP2 = this.mixer.clipAction( clip )
+        this.playCardP2 = this.mixer.clipAction(clip)
         this.playCardP2.loop = THREE.LoopOnce
-        this.playCardP2.clampWhenFinished = true; 
-        
+        this.playCardP2.clampWhenFinished = true;
+
         //wars card move to center
         clip = this._createAnimationClip(
             [
-                25, 9.5, 0, 
-                15, 15, 0, 
+                25, 9.5, 0,
+                15, 15, 0,
                 7, 12.5, 0
             ],
             [
-                this.mesh.quaternion.x, this.mesh.quaternion.y, this.mesh.quaternion.z, this.mesh.quaternion.w, 
+                this.mesh.quaternion.x, this.mesh.quaternion.y, this.mesh.quaternion.z, this.mesh.quaternion.w,
                 this.mesh.quaternion.x, -this.mesh.quaternion.y, -this.mesh.quaternion.z, this.mesh.quaternion.w,
                 qFinal.x, qFinal.y, qFinal.z, qFinal.w,
             ]
         )
-        this.playCardP3 = this.mixer.clipAction( clip )
+        this.playCardP3 = this.mixer.clipAction(clip)
         this.playCardP3.loop = THREE.LoopOnce
-        this.playCardP3.clampWhenFinished = true; 
+        this.playCardP3.clampWhenFinished = true;
     }
 
     /**
@@ -170,17 +173,17 @@ class Card {
      * @param {Number} playerNumber number of player doing animation(1, 2, 3)
      */
     warFaceDownAnimation(playerNumber) {
-        switch(playerNumber){
-            case 1: 
+        switch (playerNumber) {
+            case 1:
                 this.faceDownP1.play();
                 break;
-            case 2: 
+            case 2:
                 this.faceDownP2.play();
                 break;
-            case 3: 
+            case 3:
                 this.faceDownP3.play();
                 break;
-            default: 
+            default:
                 console.warn("No player number exists for, ", playerNumber)
         }
     }
@@ -190,18 +193,18 @@ class Card {
      * @param {Number} playerNumber number of player doing animation(1, 2, 3)
      */
     playCardAnimation(playerNumber) {
-        switch(playerNumber) {
-            case 1: 
+        switch (playerNumber) {
+            case 1:
                 this.playCardP1.play()
                 break;
-            case 2: 
+            case 2:
                 this.playCardP2.play()
                 break;
             case 3:
                 this.playCardP3.play()
                 break;
-            default: 
-            console.warn("No player number exists for, ", playerNumber)
+            default:
+                console.warn("No player number exists for, ", playerNumber)
         }
     }
 
@@ -227,13 +230,96 @@ class Card {
      * @returns {THREE.AnimationClip} a new animation clip
      */
     _createAnimationClip(positionArray, quaternionArray) {
-        let quaternionKF = new THREE.QuaternionKeyframeTrack( '.quaternion', [ 0, 1, 2 ], quaternionArray );
-        let position = new THREE.VectorKeyframeTrack('.position', [0,1,2], positionArray)
+        let quaternionKF = new THREE.QuaternionKeyframeTrack('.quaternion', [0, 1, 2], quaternionArray);
+        let position = new THREE.VectorKeyframeTrack('.position', [0, 1, 2], positionArray)
+
+        return new THREE.AnimationClip('action', 3, [position, quaternionKF])
+    }
+
+    loadCorrectTexture(suit, value, loader) {
+
+        if (value == 14 && suit == 0) {
+            var material = new THREE.MeshBasicMaterial({
+                map: loader.load('textures/cards/ace_of_hearts.png')
+            });
+        }
+
+            if (value == 14 && suit == 1) {
+                var material = new THREE.MeshBasicMaterial({
+                    map: loader.load('textures/cards/ace_of_diamonds.png')
+                });
+            }
+
+        if (value == 14 && suit == 2) {
+            var material = new THREE.MeshBasicMaterial({
+                map: loader.load('textures/cards/ace_of_clubs.png')
+            });
+        }
+       
+        if (value == 14 && suit ==3) {
+            var material = new THREE.MeshBasicMaterial({
+                map: loader.load('textures/cards/ace_of_spades.png')
+            });
+        }
+
         
-        return new THREE.AnimationClip('action', 3, [ position, quaternionKF])
+
+        if (value == 13 && suit == 0) {
+            var material = new THREE.MeshBasicMaterial({
+                map: loader.load('textures/cards/king_of_hearts.png')
+            });
+        }
+
+        if (value == 13 && suit ==1) {
+            var material = new THREE.MeshBasicMaterial({
+                map: loader.load('textures/cards/king_of_diamonds.png')
+            });
+        }
+
+        if (value == 13 && suit ==2) {
+            var material = new THREE.MeshBasicMaterial({
+                map: loader.load('textures/cards/king_of_clubs.png')
+            });
+        }
+
+        if (value == 13 && suit ==3) {
+            var material = new THREE.MeshBasicMaterial({
+                map: loader.load('textures/cards/king_of_spades.png')
+            });
+        }
+
+        if (value == 12 && suit ==0) {
+            var material = new THREE.MeshBasicMaterial({
+                map: loader.load('textures/cards/queen_of_hearts.png')
+            });
+        }
+
+        if (value == 12 && suit ==1) {
+            var material = new THREE.MeshBasicMaterial({
+                map: loader.load('textures/cards/queen_of_diamonds.png')
+            });
+        }
+
+        if (value == 12 && suit ==2) {
+            var material = new THREE.MeshBasicMaterial({
+                map: loader.load('textures/cards/queen_of_clubs.png')
+            });
+        }
+
+        if (value == 12 && suit ==3) {
+            var material = new THREE.MeshBasicMaterial({
+                map: loader.load('textures/cards/queen_of_spades.png')
+            });
+        }
+
+
+
+
+
+
+        return material;
     }
 }
-
 // Deck class definition
 
 export { Card }
