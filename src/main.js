@@ -56,14 +56,6 @@ let ambientLightOn = true;
 const tableLight = new THREE.PointLight(0xFFFFFF, 10000);
 tableLight.position.set(0, 30, 0);
 tableLight.castShadow = true;
-tableLight.shadow.mapSize.width = 2048;
-tableLight.shadow.mapSize.height = 2048;
-tableLight.shadow.camera.near = 10;
-tableLight.shadow.camera.far = 100;
-tableLight.shadow.camera.left = -30;
-tableLight.shadow.camera.right = 30;
-tableLight.shadow.camera.top = 30;
-tableLight.shadow.camera.bottom = -30;
 scene.add(tableLight);
 
 
