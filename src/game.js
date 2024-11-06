@@ -103,7 +103,7 @@ class Game {
             offset += 0.05 
         }
         this.winnerCardsToAnimate = [];
-
+        
         //go through animating cards to stop there animations and add it to winner pile
         for (let card of this.cardsToAnimate) {
             //stop animations needed to move cards properly
@@ -121,6 +121,11 @@ class Game {
             this.lastWinner.cards.push(card)
         }
         this.cardsToAnimate = []
+
+        //bump up winner deck
+        for (let card of this.lastWinner.cards) {
+            card.mesh.translateZ(-0.08)
+        }
 
         //check if players still has cards
         for (let player of this.players.values()) {
