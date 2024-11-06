@@ -4,7 +4,7 @@ import { Floor, Table } from './sceneObjects';
 import { Card } from './Card';
 import { Deck } from './Deck';
 import { Game } from './game';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 var scene = new THREE.Scene();
 
