@@ -10,6 +10,9 @@ var scene = new THREE.Scene();
 let game;
 let debug = true;
 
+let mixer;
+const mixers = [];
+
 var camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, .1, 3000);
 camera.position.set(0, 30, 70)
 camera.lookAt(new THREE.Vector3(0.0, 0.0, 0.0));
@@ -109,6 +112,37 @@ loader.load(
             }
         });
 
+        // Handle animations
+        if (gltf.animations && gltf.animations.length) {
+            console.log('Available animations:', gltf.animations);
+            
+            // Create a single mixer for the whole scene
+            mixer = new THREE.AnimationMixer(gltf.scene);
+            
+            // Play all animations
+            gltf.animations.forEach((clip, index) => {
+                console.log(`Animation ${index}:`, {
+                    name: clip.name,
+                    duration: clip.duration,
+                    tracks: clip.tracks.map(track => ({
+                        name: track.name,
+                        targetNode: track.name.split('.')[0]
+                    }))
+                });
+                
+                try {
+                    const action = mixer.clipAction(clip);
+                    action.play();
+                    console.log(`Successfully started animation: ${clip.name}`);
+                } catch (error) {
+                    console.error(`Failed to play animation ${clip.name}:`, error);
+                }
+            });
+            
+            // Add the single mixer to the mixers array
+            mixers.push(mixer);
+        }
+
         gltf.scene.position.set(-2700, -20, 800);
         gltf.scene.scale.set(50, 50, 50);
         
@@ -153,6 +187,13 @@ loader.load(
 
 function animate() {
     const delta = clock.getDelta();
+    
+    // Update all mixers
+    mixers.forEach((mixer) => {
+        mixer.update(delta);
+    });
+    
+    // Your existing animation code
     if (game) {
         game.updateAnimations(delta);
     }
