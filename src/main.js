@@ -82,7 +82,7 @@ document.addEventListener('keyup', (event) => {
 });
 
 // Lighting setup
-const ambientLight = new THREE.AmbientLight(0xfff2d9, 0.8);
+const ambientLight = new THREE.AmbientLight(0xfff2d9, 1.5);
 scene.add(ambientLight);
 let ambientLightOn = true;
 
@@ -100,7 +100,7 @@ sunLight.shadow.camera.top = 1000;
 sunLight.shadow.camera.bottom = -1000;
 scene.add(sunLight);
 
-// Modify table light to be less intense
+// Table Light
 const tableLight = new THREE.PointLight(0xffffff, 2000);
 tableLight.position.set(0, 30, 0);
 tableLight.castShadow = true;
@@ -186,9 +186,6 @@ loader.load(
         gltf.scene.scale.set(50, 50, 50);
 
         addLightsToLamps(gltf.scene);
-
-        ambientLight.intensity = 5;
-        tableLight.intensity = 1000;
 
         scene.add(gltf.scene);
         game = new Game(scene);
