@@ -2,7 +2,7 @@ import * as THREE from 'three';
 
 // Card class definition
 class Card {
-    constructor(suit, rank, width = 2.5, height = 3.5) {
+    constructor(suit, rank, width = 3.5, height = 5.5) {
         //might delete ID as unneeded
         //this.id = id;
         this.suit = suit;
@@ -60,7 +60,7 @@ class Card {
         //add animations clips p1 move to center
         let clip = this._createAnimationClip(
             [
-                -25, 9.5, 0,
+                this.mesh.position.x, this.mesh.position.y, this.mesh.position.z,
                 -14.5, 15, 0,
                 -7, 9.5, 0
             ],
@@ -114,7 +114,7 @@ class Card {
         //wars card move to center
         clip = this._createAnimationClip(
             [
-                -25, 9.5, 0,
+                -25, this.mesh.position.y, 0,
                 -14.5, 15, 0,
                 -7, 12.5, 0
             ],
@@ -131,7 +131,7 @@ class Card {
         //war card move to center p2
         clip = this._createAnimationClip(
             [
-                0, 9.5, 25,
+                0, this.mesh.position.y, 25,
                 0, 15, 15,
                 0, 12.5, 0
             ],
@@ -148,7 +148,7 @@ class Card {
         //wars card move to center
         clip = this._createAnimationClip(
             [
-                25, 9.5, 0,
+                25, this.mesh.position.y, 0,
                 15, 15, 0,
                 7, 12.5, 0
             ],
@@ -161,6 +161,57 @@ class Card {
         this.playCardP3 = this.mixer.clipAction(clip)
         this.playCardP3.loop = THREE.LoopOnce
         this.playCardP3.clampWhenFinished = true;
+
+        //wars card move to center
+        clip = this._createAnimationClip(
+            [
+                -25, 9.5, 0,
+                -14.5, 15, 0,
+                -7, 12.5, 3
+            ],
+            [
+                this.mesh.quaternion.x, this.mesh.quaternion.y, this.mesh.quaternion.z, this.mesh.quaternion.w,
+                this.mesh.quaternion.x, -this.mesh.quaternion.y, -this.mesh.quaternion.z, this.mesh.quaternion.w,
+                qFinal.x, qFinal.y, qFinal.z, qFinal.w,
+            ]
+        )
+        this.playWarP1 = this.mixer.clipAction(clip)
+        this.playWarP1.loop = THREE.LoopOnce
+        this.playWarP1.clampWhenFinished = true;
+
+        //war card move to center p2
+        clip = this._createAnimationClip(
+            [
+                0, 9.5, 25,
+                0, 15, 15,
+                0, 12.5, 3
+            ],
+            [
+                this.mesh.quaternion.x, this.mesh.quaternion.y, this.mesh.quaternion.z, this.mesh.quaternion.w,
+                -this.mesh.quaternion.x, this.mesh.quaternion.y, this.mesh.quaternion.z, this.mesh.quaternion.w,
+                qFinal.x, qFinal.y, qFinal.z, qFinal.w,
+            ]
+        )
+        this.playWarP2 = this.mixer.clipAction(clip)
+        this.playWarP2.loop = THREE.LoopOnce
+        this.playWarP2.clampWhenFinished = true;
+
+        //wars card move to center
+        clip = this._createAnimationClip(
+            [
+                25, 9.5, 0,
+                15, 15, 0,
+                7, 12.5, 3
+            ],
+            [
+                this.mesh.quaternion.x, this.mesh.quaternion.y, this.mesh.quaternion.z, this.mesh.quaternion.w,
+                this.mesh.quaternion.x, -this.mesh.quaternion.y, -this.mesh.quaternion.z, this.mesh.quaternion.w,
+                qFinal.x, qFinal.y, qFinal.z, qFinal.w,
+            ]
+        )
+        this.playWarP3 = this.mixer.clipAction(clip)
+        this.playWarP3.loop = THREE.LoopOnce
+        this.playWarP3.clampWhenFinished = true;
     }
 
     /**
@@ -173,7 +224,7 @@ class Card {
         let clip = this._createAnimationClip(
         [
             0, 12.5 , 0,
-            winnerPos.x/2 +  THREE.MathUtils.randFloatSpread(10), winnerPos.y + THREE.MathUtils.randFloat(0,15), winnerPos.z/2 +  THREE.MathUtils.randFloatSpread(10),
+            winnerPos.x/2 +  THREE.MathUtils.randFloatSpread(10), winnerPos.y + THREE.MathUtils.randFloat(7,15), winnerPos.z/2 +  THREE.MathUtils.randFloatSpread(10),
             winnerPos.x, winnerPos.y, winnerPos.z,
         ],
         [
@@ -204,6 +255,26 @@ class Card {
                 break;
             case 3:
                 this.faceDownP3.play();
+                break;
+            default:
+                console.warn("No player number exists for, ", playerNumber)
+        }
+    }
+
+    /**
+     * Starts playing cards going to center in front of cards on table 
+     * @param {Number} playerNumber number of player doing animation(1, 2, 3)
+     */
+    playWarCard(playerNumber) {
+        switch (playerNumber) {
+            case 1:
+                this.playWarP1.play()
+                break;
+            case 2:
+                this.playWarP2.play()
+                break;
+            case 3:
+                this.playWarP3.play()
                 break;
             default:
                 console.warn("No player number exists for, ", playerNumber)
@@ -242,6 +313,10 @@ class Card {
         this.playCardP1.stop()
         this.playCardP2.stop()
         this.playCardP3.stop()
+
+        this.playWarP1.stop()
+        this.playWarP2.stop()
+        this.playWarP3.stop()
     }
 
     /**

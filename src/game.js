@@ -93,6 +93,7 @@ class Game {
         }
 
         console.log("Player 1",this.players.get(1).cards, "Player 2", this.players.get(2).cards ,"Player 3", this.players.get(3).cards)
+
         //stop moving cards from last turn to avoid issues and set proper z value  
         let offset = 0;
         for (let card of this.winnerCardsToAnimate) {
@@ -102,7 +103,7 @@ class Game {
             offset += 0.05 
         }
         this.winnerCardsToAnimate = [];
-
+        
         //go through animating cards to stop there animations and add it to winner pile
         for (let card of this.cardsToAnimate) {
             //stop animations needed to move cards properly
@@ -121,19 +122,9 @@ class Game {
         }
         this.cardsToAnimate = []
 
-        //this may be causing issues with gaps in deck
-        for (let i = 1; i < 4; i++) {
-            let offset = 0;
-            if (i != this.lastWinner.number) {
-                offset = 0.05
-            }
-            else {
-                offset = -0.05
-            }
-
-            for (let card of this.players.get(i).cards) {
-                card.mesh.translateZ(offset);
-            }
+        //bump up winner deck
+        for (let card of this.lastWinner.cards) {
+            card.mesh.translateZ(-0.08)
         }
 
         //check if players still has cards
@@ -230,7 +221,7 @@ class Game {
                 playerCards.push(faceDownCard,faceUpCard)
 
                 //play animations for cards
-                faceUpCard.playCardAnimation(player.number)
+                faceUpCard.playWarCard(player.number)
                 faceDownCard.warFaceDownAnimation(player.number)
                 this.cardsToAnimate.push(faceDownCard, faceUpCard)
             }
