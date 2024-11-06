@@ -16,7 +16,7 @@ class Card {
         const backMaterial = new THREE.MeshPhongMaterial({ color: 0x8f542c });
 
         // Geometry and mesh
-        const geometry = new THREE.PlaneGeometry(width, height);
+        const geometry = new THREE.BoxGeometry(width, height, 0.05);
         //this.mesh = new THREE.Mesh( geometry, backMaterial);
 
         // Create a group to hold the front and back of the card
