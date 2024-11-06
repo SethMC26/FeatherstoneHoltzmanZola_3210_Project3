@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls.js';
 import { Floor, Table } from './sceneObjects';
 import { Card } from './Card';
 import { Deck } from './Deck';
@@ -13,34 +13,73 @@ let debug = true;
 let mixer;
 const mixers = [];
 
-var camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, .1, 3000);
-camera.position.set(0, 30, 70)
-camera.lookAt(new THREE.Vector3(0.0, 0.0, 0.0));
+// Create camera with 75-degree FOV
+var camera = new THREE.PerspectiveCamera(
+    75,
+    window.innerWidth / window.innerHeight,
+    0.1,
+    3000
+);
+camera.position.set(0, 25, 75);
+camera.rotation.order = 'YXZ'; // Set rotation order for proper Euler angle limits
+
 scene.add(camera);
 
-var renderer = new THREE.WebGLRenderer();
+// Initialize renderer
+const renderer = new THREE.WebGLRenderer();
 renderer.setClearColor(0x000000);
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 document.body.appendChild(renderer.domElement);
 
-const controls = new OrbitControls(camera, renderer.domElement);
-controls.update();
+// Create PointerLockControls for camera movement
+const controls = new PointerLockControls(camera, document.body);
 
-// Create table and floor before loading GLTF
+// Variables to keep track of rotation
+let yaw = 0;   // Horizontal rotation (around Y-axis)
+let pitch = 0; // Vertical rotation (around X-axis)
 
-// const table = new Table(16);
-// table.tableGroup.traverse((object) => {
-//     if (object.isMesh) {
-//         object.castShadow = true;
-//     }
-// });
-// scene.add(table.tableGroup);
+// Maximum rotation angles in radians
+const MAX_PITCH = THREE.MathUtils.degToRad(30); // 30 degrees up and down
+const MAX_YAW = THREE.MathUtils.degToRad(30);   // 30 degrees left and right
 
-// const floor = new Floor(16);
-// floor.mesh.receiveShadow = true;
-// scene.add(floor.mesh);
+// Handle mouse movement for rotation clamping
+document.addEventListener('mousemove', (event) => {
+    if (controls.isLocked === false) return;
+
+    const movementX = event.movementX || 0;
+    const movementY = event.movementY || 0;
+
+    // Update yaw and pitch
+    yaw -= movementX * 0.002;
+    pitch -= movementY * 0.002;
+
+    // Clamp the angles
+    yaw = THREE.MathUtils.clamp(yaw, -MAX_YAW, MAX_YAW);
+    pitch = THREE.MathUtils.clamp(pitch, -MAX_PITCH, MAX_PITCH);
+
+    // Apply the rotation to the camera
+    camera.rotation.y = yaw;
+    camera.rotation.x = pitch;
+});
+
+// Lock the pointer on click
+document.addEventListener('click', function () {
+    if (!controls.isLocked) {
+        controls.lock();
+    }
+});
+
+const keysPressed = {};
+
+document.addEventListener('keydown', (event) => {
+    keysPressed[event.key] = true;
+});
+
+document.addEventListener('keyup', (event) => {
+    keysPressed[event.key] = false;
+});
 
 // Lighting setup
 const ambientLight = new THREE.AmbientLight(0xfff2d9, 0.8);
@@ -62,7 +101,7 @@ sunLight.shadow.camera.bottom = -1000;
 scene.add(sunLight);
 
 // Modify table light to be less intense
-const tableLight = new THREE.PointLight(0xFFFFFF, 2000);
+const tableLight = new THREE.PointLight(0xffffff, 2000);
 tableLight.position.set(0, 30, 0);
 tableLight.castShadow = true;
 tableLight.shadow.mapSize.width = 2048;
@@ -115,10 +154,10 @@ loader.load(
         // Handle animations
         if (gltf.animations && gltf.animations.length) {
             console.log('Available animations:', gltf.animations);
-            
+
             // Create a single mixer for the whole scene
             mixer = new THREE.AnimationMixer(gltf.scene);
-            
+
             // Play all animations
             gltf.animations.forEach((clip, index) => {
                 console.log(`Animation ${index}:`, {
@@ -129,7 +168,7 @@ loader.load(
                         targetNode: track.name.split('.')[0]
                     }))
                 });
-                
+
                 try {
                     const action = mixer.clipAction(clip);
                     action.play();
@@ -138,24 +177,21 @@ loader.load(
                     console.error(`Failed to play animation ${clip.name}:`, error);
                 }
             });
-            
+
             // Add the single mixer to the mixers array
             mixers.push(mixer);
         }
 
         gltf.scene.position.set(-2700, -20, 800);
         gltf.scene.scale.set(50, 50, 50);
-        
+
         addLightsToLamps(gltf.scene);
-        
+
         ambientLight.intensity = 5;
         tableLight.intensity = 1000;
-        
+
         scene.add(gltf.scene);
         game = new Game(scene);
-        
-        camera.position.set(0, 120, 80);
-        camera.lookAt(0, 0, 0);
 
         gltf.scene.traverse((node) => {
             if (node.isMesh) {
@@ -187,17 +223,17 @@ loader.load(
 
 function animate() {
     const delta = clock.getDelta();
-    
+
     // Update all mixers
     mixers.forEach((mixer) => {
         mixer.update(delta);
     });
-    
+
     // Your existing animation code
     if (game) {
         game.updateAnimations(delta);
     }
-    controls.update();
+
     renderer.render(scene, camera);
     requestAnimationFrame(animate);
 }
@@ -236,11 +272,12 @@ function keyHandler(e) {
         case "m":
             shadowsOn = !shadowsOn;
             tableLight.castShadow = shadowsOn;
-            floor.mesh.receiveShadow = shadowsOn;
-            table.tableGroup.traverse((object) => {
-                if (object.isMesh) object.castShadow = shadowsOn;
-            });
-            console.log(`Shadow on toggled: ${shadowsOn}`);
+            // Assuming 'floor' and 'table' are defined
+            // floor.mesh.receiveShadow = shadowsOn;
+            // table.tableGroup.traverse((object) => {
+            //     if (object.isMesh) object.castShadow = shadowsOn;
+            // });
+            console.log(`Shadow toggled: ${shadowsOn}`);
             break;
         case "n":
             if (game && game.isGameOn) {
@@ -248,6 +285,8 @@ function keyHandler(e) {
             } else {
                 console.log("Game is over");
             }
+            break;
+        default:
             break;
     }
 }
@@ -260,7 +299,7 @@ function addLightsToLamps(gltfScene) {
     const lampRadius = 150;
     let lightCount = 0;
     const maxLights = 8;
-    
+
     gltfScene.traverse((node) => {
         if (node.name.toLowerCase().includes('lamp')) {
             if (lightCount < maxLights) {
@@ -269,10 +308,10 @@ function addLightsToLamps(gltfScene) {
                 light.castShadow = true;
                 light.shadow.mapSize.width = 512;
                 light.shadow.mapSize.height = 512;
-                
+
                 if (debug) {
                     const sphereGeometry = new THREE.SphereGeometry(5, 16, 16);
-                    const sphereMaterial = new THREE.MeshBasicMaterial({ 
+                    const sphereMaterial = new THREE.MeshBasicMaterial({
                         color: lampColor,
                         transparent: true,
                         opacity: 0.1
@@ -280,7 +319,7 @@ function addLightsToLamps(gltfScene) {
                     const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
                     light.add(sphere);
                 }
-                
+
                 node.add(light);
                 lightCount++;
             }
