@@ -51,7 +51,7 @@ let ambientLightOn = true;
 
 
 // Directional light above the table for stronger shadow casting
-const tableLight = new THREE.PointLight(0xFFFFFF, 10000);
+const tableLight = new THREE.PointLight(0xFFFFFF, 5000);
 tableLight.position.set(0, 30, 0);
 tableLight.castShadow = true;
 scene.add(tableLight);
@@ -112,7 +112,6 @@ function keyHandler(e) {
         case "p":
             pointLightOn = !pointLightOn;
             tableLight.visible = pointLightOn;
-            console.log(`Point light toggled: ${pointLightOn}`);
             break;
         case "m":
             shadowsOn = !shadowsOn;
@@ -121,7 +120,6 @@ function keyHandler(e) {
             table.tableGroup.traverse((object) => {
                 if (object.isMesh) object.castShadow = shadowsOn;
             });
-            console.log(`Shadow on toggled: ${shadowsOn}`);
             break;
 
         case "n":
@@ -143,7 +141,6 @@ function handleTouch(e) {
     // Check if the game is on
     if (game.isGameOn) {
         game.nextTurn();
-        console.log("Next turn triggered by touch");
     } else {
         console.log("Game is over");
     }

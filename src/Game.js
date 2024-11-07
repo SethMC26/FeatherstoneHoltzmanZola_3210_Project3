@@ -9,7 +9,6 @@ class Game {
         this.numPlayers = 3;
         //create new Deck
         const deck = new Deck(scene);
-        console.log(deck)
 
         //shuffle deck
         deck.shuffle()
@@ -27,8 +26,6 @@ class Game {
         //set rotation for later use when moving cards to p1 area
         this.p1.setPlayerRotation()
 
-        console.debug(this.p1.cards)
-
         this.p2 = new Player(2, deck.cards.slice(17,35),new THREE.Vector3(0,9.5,25))
         //move cards to p2 area
         offset = 0;
@@ -37,7 +34,6 @@ class Game {
             card.mesh.position.set(0,10.35 + offset,25)
             card.addAnimationClips()
         }
-        console.debug(this.p2.cards)
         //set rotation for later use when moving cards to p2 area
         this.p2.setPlayerRotation()
 
@@ -51,7 +47,6 @@ class Game {
             card.mesh.rotateZ(Math.PI/2)
             card.addAnimationClips()
         }
-        console.debug(this.p3.cards)
         //set rotation for later use when moving cards to p3 area
         this.p3.setPlayerRotation()
 
@@ -61,7 +56,6 @@ class Game {
             [2, this.p2],
             [3, this.p3],
         ]);
-        console.log(this.players)
 
         //list of cards to animate 
         this.cardsToAnimate = []
@@ -91,8 +85,6 @@ class Game {
             this.lastWinner = this.players.get(winner);
             return;
         }
-
-        console.log("Player 1",this.players.get(1).cards, "Player 2", this.players.get(2).cards ,"Player 3", this.players.get(3).cards)
 
         //stop moving cards from last turn to avoid issues and set proper z value  
         let offset = 0;
@@ -130,7 +122,6 @@ class Game {
         //check if players still has cards
         for (let player of this.players.values()) {
             if (player.isInGame && player.cards.length == 0) {
-                console.error("Removing player ", player)
                 player.isInGame = false;
                 this.numPlayers -= 1;
             }
@@ -139,7 +130,6 @@ class Game {
         //if only one player left they have one 
         if (this.numPlayers == 1) {
             this.isGameOn = false;
-            console.error("Player: ", this.players.keys().next().value, "wins! ")
             return;
         }
         
@@ -153,7 +143,6 @@ class Game {
                 //pop card off of players deck
                 let nextCard = player.cards.shift()
                 playerCards.push(nextCard)
-                console.log("player ", player.number, "next card ", nextCard)
 
                 //play animation 
                 nextCard.playCardAnimation(player.number)
@@ -167,19 +156,15 @@ class Game {
         //logic to check for winner 
         if (playerCards[1].rank > playerCards[2].rank && playerCards[1].rank > playerCards[3].rank) {
             winner = 1;
-            console.log("p1 wins")
         }
         else if (playerCards[2].rank > playerCards[1].rank && playerCards[2].rank > playerCards[3].rank) {
             winner = 2;
-            console.log("p2 win")
         }
         else if (playerCards[3].rank > playerCards[1].rank && playerCards[3].rank > playerCards[2].rank) {
             winner = 3;
-            console.log("p3 wins")
         }
         //no winner meaning WAR
         else {
-            console.warn("WAR...what is it good for absolutely nothing!")
             //set war to true we are in a war!
             this.war = true;
         }
@@ -227,26 +212,21 @@ class Game {
             }
         }
 
-        console.log("war cards", playerCards)
         if (playerCards[1].rank > playerCards[3].rank && playerCards[1].rank > playerCards[5].rank) {
-            console.log("p1 wins WAR")
             this.war = false;
             return 1
 
         }
         else if (playerCards[3].rank > playerCards[1].rank && playerCards[3].rank > playerCards[5].rank) {
-            console.log("p2 wins WAR")
             this.war = false;
             return 2
         }
         else if (playerCards[5].rank > playerCards[1].rank && playerCards[5].rank > playerCards[3].rank) {
-            console.log("p3 wins WAR")
             this.war = false; 
             return 3
         }
         //no winner do war again 
         else {
-            console.warn("GIVE ME AN F  GIVE ME A U  GIVE ME A C GIVE ME A K WHATS THAT SPELL...well 1,2,3 what are we fighting for ")
             this.war = true    
             return -1;        
             //return this._war()
