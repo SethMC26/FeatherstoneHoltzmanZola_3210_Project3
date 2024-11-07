@@ -105,3 +105,8 @@ $RECYCLE.BIN/
 /node_modules/
 /package-lock.json
 /package.json
+
+# Remove assets from git tracking
+assets/
+.env
+scripts/r2-config.js

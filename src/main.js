@@ -5,6 +5,7 @@ import { Card } from './Card';
 import { Deck } from './Deck';
 import { Game } from './game';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { getAssetUrl } from './utils/assetLoader';
 
 var scene = new THREE.Scene();
 let game;
@@ -125,7 +126,7 @@ createSkybox();
 // Load GLTF scene
 const loader = new GLTFLoader();
 loader.load(
-    'assets/fantasy_interior/scene.gltf',
+    getAssetUrl('fantasy_interior/scene.gltf'),
     function (gltf) {
         // Set up shadow casting for all meshes in the scene
         gltf.scene.traverse((node) => {
@@ -326,13 +327,16 @@ function addLightsToLamps(gltfScene) {
 
 function createSkybox() {
     const loader = new THREE.CubeTextureLoader();
+    loader.setCrossOrigin('anonymous'); // Allow cross-origin requests
+
     const skyboxTexture = loader.load([
-        'assets/skybox/px.bmp', // positive x
-        'assets/skybox/nx.bmp', // negative x
-        'assets/skybox/py.bmp', // positive y
-        'assets/skybox/ny.bmp', // negative y
-        'assets/skybox/pz.bmp', // positive z
-        'assets/skybox/nz.bmp'  // negative z
+        getAssetUrl('skybox/px.bmp'), // positive x
+        getAssetUrl('skybox/nx.bmp'), // negative x
+        getAssetUrl('skybox/py.bmp'), // positive y
+        getAssetUrl('skybox/ny.bmp'), // negative y
+        getAssetUrl('skybox/pz.bmp'), // positive z
+        getAssetUrl('skybox/nz.bmp')  // negative z
     ]);
+
     scene.background = skyboxTexture;
 }
