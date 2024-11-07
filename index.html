@@ -4,7 +4,13 @@
     <title>Project 3 </title>
 </head>
 <body style="margin: 0%;">
-    <script type="module" src="src/main.js"></script>
-       
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.138.0/build/three.module.js"
+            }
+        }
+    </script>
+    <script type="module" src="./src/Main.js"></script>
 </body>
 </html>

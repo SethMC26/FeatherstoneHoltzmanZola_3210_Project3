@@ -1,4 +1,4 @@
-import { Card } from "./Card";
+import { Card } from "./Card.js";
 
 //create two enums which are suits and ranks useful to map them to numbers
 const Suits = Object.freeze({

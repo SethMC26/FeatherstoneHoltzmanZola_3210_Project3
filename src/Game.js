@@ -1,5 +1,5 @@
-import { Card } from "./Card";
-import { Deck } from "./Deck";
+import { Card } from "./Card.js";
+import { Deck } from "./Deck.js";
 import * as THREE from 'three';
 
 class Game {
