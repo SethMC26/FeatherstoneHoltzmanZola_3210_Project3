@@ -1,8 +1,8 @@
 
 import * as THREE from 'three';
 import { OrbitControls } from "https://unpkg.com/three@0.138.0/examples/jsm/controls/OrbitControls.js";
-import { Floor, Table } from './sceneObjects.js';
-import { Game } from './game.js';
+import { Floor, Table } from './SceneObjects.js';
+import { Game } from './Game.js';
 
 
 var scene = new THREE.Scene();
