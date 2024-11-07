@@ -2,8 +2,6 @@
 import * as THREE from 'three';
 import { OrbitControls } from "https://unpkg.com/three@0.138.0/examples/jsm/controls/OrbitControls.js";
 import { Floor, Table } from './sceneObjects.js';
-import { Card } from './Card';
-import { Deck } from './Deck';
 import { Game } from './game.js';
 
 
@@ -69,41 +67,12 @@ let pointLightOn = true;
 
 const lightMoveStep = 5;
 
-
-/* for testing new animations 
-let card = new Card(2, 11)
-card.mesh.rotateX(Math.PI/2)
-card.mesh.rotateZ(Math.PI/2)
-card.setPosition(25,12.5,0)
-scene.add(card.mesh)
-
-let xAxis = new THREE.Vector3( 1 , 0, 0 );
-let qFinal = new THREE.Quaternion().setFromAxisAngle( xAxis, Math.PI * 2);
-let quaternionKF = new THREE.QuaternionKeyframeTrack( '.quaternion', [ 0, 1, 2 ], 
-    [ 
-        card.mesh.quaternion.x, card.mesh.quaternion.y, card.mesh.quaternion.z, card.mesh.quaternion.w, 
-        -card.mesh.quaternion.x, -card.mesh.quaternion.y, card.mesh.quaternion.z, card.mesh.quaternion.w,
-        qFinal.x, qFinal.y, qFinal.z, qFinal.w,
-    ] );
-let position = new THREE.VectorKeyframeTrack('.position', [0,1,2],
-    [ 
-        25, 9.5, 0, 
-        15, 20, 0, 
-        7, 12.5, 0 
-    ])
-let clip = new THREE.AnimationClip('action', 3, [ position, quaternionKF])
-let mixer = new THREE.AnimationMixer(card.mesh)
-const moveToCenterP1 = mixer.clipAction( clip )
-//moveToCenterP1.play()
-moveToCenterP1.clampWhenFinished = true; 
-*/
-
 // Animation loop
 function animate() {
+    //update any animations by delta 
     const delta = clock.getDelta();
-    //mixer.update(delta)
-    //update animations 
     game.updateAnimations(delta)
+
     controls.update();
     renderer.render(scene, camera);
 
@@ -123,12 +92,6 @@ window.addEventListener('resize', () => {
 // Simple way to setup keybaord controls:
 function keyHandler(e) {
     switch (e.key) {
-
-        /*
-        case "t":
-            card.mesh.position.set(0,10,0)
-            break;
-        */
         case "w":
             tableLight.position.z -= lightMoveStep;
             break;
