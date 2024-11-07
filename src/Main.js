@@ -135,3 +135,16 @@ function keyHandler(e) {
     }
 }
 document.addEventListener("keydown", keyHandler, false);
+
+//add touch for mobile users 
+document.addEventListener("touchstart", handleTouch, false);
+function handleTouch(e) {
+
+    // Check if the game is on
+    if (game.isGameOn) {
+        game.nextTurn();
+        console.log("Next turn triggered by touch");
+    } else {
+        console.log("Game is over");
+    }
+}
