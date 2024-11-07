@@ -6,6 +6,7 @@ import { Deck } from './Deck';
 import { Game } from './game';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { getAssetUrl } from './utils/assetLoader';
+import MaterialManager from './utils/MaterialManager';
 
 var scene = new THREE.Scene();
 let game;
@@ -125,11 +126,13 @@ createSkybox();
 
 // Load GLTF scene
 const loader = new GLTFLoader();
+const materialManager = new MaterialManager(scene);
+
 loader.load(
     getAssetUrl('fantasy_interior/scene.gltf'),
-    function (gltf) {
+    async function (gltf) {
         // Set up shadow casting for all meshes in the scene
-        gltf.scene.traverse((node) => {
+        gltf.scene.traverse(async (node) => {
             if (node.isMesh) {
                 // Enable shadow casting for all meshes
                 node.castShadow = true;
@@ -148,6 +151,17 @@ loader.load(
                     // Lamp objects should cast shadows
                     node.castShadow = true;
                     node.receiveShadow = false;
+                }
+
+                if (node.material.name === 'glowMAT') {
+                    try {
+                        const newMaterial = await materialManager.createGlowMaterial({
+                            map: getAssetUrl('fantasy_interior/textures/glowMAT_baseColor.png'),
+                        });
+                        node.material = newMaterial;
+                    } catch (error) {
+                        console.error('Failed to setup glow material:', error);
+                    }
                 }
             }
         });
@@ -222,17 +236,30 @@ loader.load(
 function animate() {
     const delta = clock.getDelta();
 
-    // Update all mixers
-    mixers.forEach((mixer) => {
-        mixer.update(delta);
-    });
+    try {
+        mixers.forEach((mixer) => {
+            mixer.update(delta);
+        });
 
-    // Your existing animation code
-    if (game) {
-        game.updateAnimations(delta);
+        if (game) {
+            game.updateAnimations(delta);
+        }
+
+        renderer.render(scene, camera);
+    } catch (error) {
+        console.error('Animation error:', error);
+        // Attempt to recover by recreating problematic materials
+        scene.traverse((node) => {
+            if (node.isMesh && node.material.name === 'glowMAT') {
+                materialManager.createGlowMaterial({
+                    map: getAssetUrl('fantasy_interior/textures/glowMAT_baseColor.png'),
+                }).then(material => {
+                    node.material = material;
+                });
+            }
+        });
     }
 
-    renderer.render(scene, camera);
     requestAnimationFrame(animate);
 }
 
