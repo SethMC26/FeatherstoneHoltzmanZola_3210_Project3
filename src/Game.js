@@ -19,8 +19,8 @@ class Game {
         //move cards to p1 area
         let offset = 0; //offset will "Stack" the cards
         for (let card of this.p1.cards) {
-            offset += 0.05
-            card.mesh.position.set(-25,9.5 + offset,0)
+            offset -= 0.05
+            card.mesh.position.set(-25,10.35 + offset,0)
             card.mesh.rotateZ(Math.PI/2)
             card.addAnimationClips()
         }
@@ -33,8 +33,8 @@ class Game {
         //move cards to p2 area
         offset = 0;
         for (let card of this.p2.cards) {
-            offset += 0.05
-            card.mesh.position.set(0,9.5 + offset,25)
+            offset -= 0.05
+            card.mesh.position.set(0,10.35 + offset,25)
             card.addAnimationClips()
         }
         console.debug(this.p2.cards)
@@ -46,8 +46,8 @@ class Game {
         this.p3 = new Player(3, deck.cards.slice(35), new THREE.Vector3(25,9.5,0))
         //move cards to p3 area
         for (let card of this.p3.cards) {
-            offset += 0.05
-            card.mesh.position.set(25,9.5 + offset,0)
+            offset -= 0.05
+            card.mesh.position.set(25,10.35 + offset,0)
             card.mesh.rotateZ(Math.PI/2)
             card.addAnimationClips()
         }
@@ -124,7 +124,7 @@ class Game {
 
         //bump up winner deck
         for (let card of this.lastWinner.cards) {
-            card.mesh.translateZ(-0.08)
+            card.mesh.translateZ(-0.05)
         }
 
         //check if players still has cards
