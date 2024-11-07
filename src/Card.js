@@ -16,7 +16,7 @@ class Card {
         const backMaterial = new THREE.MeshPhongMaterial({ color: 0x8f542c });
 
         // Geometry and mesh
-        const geometry = new THREE.PlaneGeometry(width, height);
+        const geometry = new THREE.BoxGeometry(width, height, 0.05);
         //this.mesh = new THREE.Mesh( geometry, backMaterial);
 
         // Create a group to hold the front and back of the card
@@ -31,6 +31,9 @@ class Card {
         backFace.rotation.y = Math.PI; // Rotate to face opposite direction
         backFace.position.z = -0.01; // Offset slightly to avoid z-fighting
 
+        backFace.castShadow = true;
+        frontFace.castShadow = true;
+        
         // Add both faces to the group
         this.mesh.add(frontFace);
         this.mesh.add(backFace);
@@ -337,25 +340,25 @@ class Card {
 
         if (value == 14 && suit == 0) {
             var material = new THREE.MeshPhongMaterial({
-                map: loader.load('textures/cards/ace_of_hearts.png')
+                map: loader.load('textures/Cards/ace_of_hearts.png')
             });
         }
 
             if (value == 14 && suit == 1) {
                 var material = new THREE.MeshPhongMaterial({
-                    map: loader.load('textures/cards/ace_of_diamonds.png')
+                    map: loader.load('textures/Cards/ace_of_diamonds.png')
                 });
             }
 
         if (value == 14 && suit == 2) {
             var material = new THREE.MeshPhongMaterial({
-                map: loader.load('textures/cards/ace_of_clubs.png')
+                map: loader.load('textures/Cards/ace_of_clubs.png')
             });
         }
        
         if (value == 14 && suit ==3) {
             var material = new THREE.MeshPhongMaterial({
-                map: loader.load('textures/cards/ace_of_spades.png')
+                map: loader.load('textures/Cards/ace_of_spades.png')
             });
         }
 
@@ -363,49 +366,49 @@ class Card {
 
         if (value == 13 && suit == 0) {
             var material = new THREE.MeshPhongMaterial({
-                map: loader.load('textures/cards/king_of_hearts.png')
+                map: loader.load('textures/Cards/king_of_hearts.png')
             });
         }
 
-        if (value == 13 && suit ==1) {
+        if (value == 13 && suit == 1) {
             var material = new THREE.MeshPhongMaterial({
-                map: loader.load('textures/cards/king_of_diamonds.png')
+                map: loader.load('textures/Cards/king_of_diamonds.png')
             });
         }
 
         if (value == 13 && suit ==2) {
             var material = new THREE.MeshPhongMaterial({
-                map: loader.load('textures/cards/king_of_clubs.png')
+                map: loader.load('textures/Cards/king_of_clubs.png')
             });
         }
 
         if (value == 13 && suit ==3) {
             var material = new THREE.MeshPhongMaterial({
-                map: loader.load('textures/cards/king_of_spades.png')
+                map: loader.load('textures/Cards/king_of_spades.png')
             });
         }
 
         if (value == 12 && suit ==0) {
             var material = new THREE.MeshPhongMaterial({
-                map: loader.load('textures/cards/queen_of_hearts.png')
+                map: loader.load('textures/Cards/queen_of_hearts.png')
             });
         }
 
         if (value == 12 && suit ==1) {
             var material = new THREE.MeshPhongMaterial({
-                map: loader.load('textures/cards/queen_of_diamonds.png')
+                map: loader.load('textures/Cards/queen_of_diamonds.png')
             });
         }
 
         if (value == 12 && suit ==2) {
             var material = new THREE.MeshPhongMaterial({
-                map: loader.load('textures/cards/queen_of_clubs.png')
+                map: loader.load('textures/Cards/queen_of_clubs.png')
             });
         }
 
         if (value == 12 && suit ==3) {
             var material = new THREE.MeshPhongMaterial({
-                map: loader.load('textures/cards/queen_of_spades.png')
+                map: loader.load('textures/Cards/queen_of_spades.png')
             });
         }
 
