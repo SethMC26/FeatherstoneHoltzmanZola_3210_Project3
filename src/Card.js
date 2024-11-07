@@ -13,7 +13,16 @@ class Card {
         var loader = new THREE.TextureLoader();
 
         const frontMaterial = this.loadCorrectTexture(suit, rank, loader);
-        const backMaterial = new THREE.MeshPhongMaterial({ color: 0x8f542c });
+        
+        // Load back texture and create back material
+        const backTexture = loader.load('textures/cards/back_blue.png');
+        const backMaterial = new THREE.MeshPhysicalMaterial({ 
+            map: backTexture,
+            reflectivity: 0.5,
+            clearcoat: 0.3,
+            clearcoatRoughness: 0.3,
+            roughness: 0.4
+        });
 
         // Geometry and mesh
         const geometry = new THREE.BoxGeometry(width, height, 0.05);
