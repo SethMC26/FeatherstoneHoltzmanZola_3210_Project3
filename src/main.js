@@ -1,10 +1,10 @@
 
 import * as THREE from 'three';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { Floor, Table } from './sceneObjects';
+import { OrbitControls } from "https://unpkg.com/three@0.138.0/examples/jsm/controls/OrbitControls.js";
+import { Floor, Table } from './sceneObjects.js';
 import { Card } from './Card';
 import { Deck } from './Deck';
-import { Game } from './game';
+import { Game } from './game.js';
 
 
 var scene = new THREE.Scene();

@@ -1,4 +1,4 @@
-import { Card } from "./Card";
+import { Card } from "./Card.js";
 import { Deck } from "./Deck";
 import * as THREE from 'three';
 
