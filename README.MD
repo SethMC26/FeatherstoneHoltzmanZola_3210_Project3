@@ -2,6 +2,8 @@
 
 Our Game is [Live here](https://test-453b3.web.app/)! deployed with firebase! 
 
+Also deployed to [GitHub Pages](https://sethmc26.github.io/FeatherstoneHoltzmanZola_3210_Project3/)
+
 Implementation of the Card Game war for computer graphics. 
 
 # Quick Start 
