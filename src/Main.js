@@ -51,7 +51,7 @@ let ambientLightOn = true;
 
 
 // Directional light above the table for stronger shadow casting
-const tableLight = new THREE.PointLight(0xFFFFFF, 5000);
+const tableLight = new THREE.PointLight(0xFFFFFF, 2.5);
 tableLight.position.set(0, 30, 0);
 tableLight.castShadow = true;
 scene.add(tableLight);
