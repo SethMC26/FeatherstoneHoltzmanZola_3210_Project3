@@ -9,7 +9,7 @@ var scene = new THREE.Scene();
 
 var camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, .1, 3000);
 //camera.position.set(-57, 36, 0)  // Try moving this around!
-camera.position.set(0, 30, 70)
+camera.position.set(0, 30, 55)
 camera.lookAt(new THREE.Vector3(0.0, 0.0, 0.0));
 scene.add(camera);
 
@@ -24,8 +24,8 @@ renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 document.body.appendChild(renderer.domElement);
 
 //basic controls for testing 
-const controls = new OrbitControls(camera, renderer.domElement);
-controls.update();
+//const controls = new OrbitControls(camera, renderer.domElement);
+//controls.update();
 
 //create a new table with size 16 (size scaling is still WIP)
 const table = new Table(16);
@@ -73,7 +73,7 @@ function animate() {
     const delta = clock.getDelta();
     game.updateAnimations(delta)
 
-    controls.update();
+    //controls.update();
     renderer.render(scene, camera);
 
     requestAnimationFrame(animate);

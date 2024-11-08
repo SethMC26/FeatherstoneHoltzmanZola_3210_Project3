@@ -362,9 +362,9 @@ class Card {
             map: loader.load(`${cardFolder}/${rankName}_of_${suitName}.svg`),
             normalMap: loader.load(`${cardFolder}/${rankName}_of_${suitName}_normal.png`),
             normalScale: new THREE.Vector2(0.25, 0.25), // Adjust normal map intensity
-            reflectivity: 0.2,
-            clearcoat: 0.5,
-            clearcoatRoughness: 0.5,
+            reflectivity: 0.02,
+            clearcoat: 0.05,
+            clearcoatRoughness: 0.05,
             roughness: 0.2
         });
 
