@@ -1,3 +1,9 @@
+# Deploy branch
+
+This is my deploy branch there are many like it but this one is mine. My deploy branch is my best friend. It is my life. I must master it as I must master my life. My Deploy branch, without me, is useless. Without my Deploy Branch, I am useless. I must deploy my branch true.
+
+*Note for Stuetzle this branch is not for grading only deployment to firebase and github pages*
+
 # CSC3210 Project 3 - War Game
 
 Our Game is [Live here](https://test-453b3.web.app/)! deployed with firebase! 

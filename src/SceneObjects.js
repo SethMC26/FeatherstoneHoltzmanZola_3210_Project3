@@ -102,7 +102,7 @@ class Floor {
             color: 0x876f5d,
             map: texture, 
             normalMap: normalTexture,
-            bumpMap: bumpTexture
+            //bumpMap: bumpTexture
         });
 
         this.mesh = new THREE.Mesh(floorGeom, floorMat)
