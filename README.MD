@@ -7,12 +7,20 @@ Also deployed to [GitHub Pages](https://sethmc26.github.io/FeatherstoneHoltzmanZ
 Implementation of the Card Game war for computer graphics. 
 
 # Quick Start 
+1. `git clone https://github.com/SethMC26/FeatherstoneHoltzmanZola_3210_Project3`
 1. `npm install three`
 2. `npm install vite`
-1. `git clone https://github.com/SethMC26/FeatherstoneHoltzmanZola_3210_Project3`
-
 2. `npx vite`
 
+
+# Controls 
+<kbd>N</kbd> To play next turn
+
+<kbd>WASD</kbd> to move light
+
+<kbd>P</kbd> Toggle point light
+
+<kbd>L</kbd> Toggle ambient light 
 # Above and Beyond
 To meet the above and beyond requirement we deployed our project to firebase for a live demo. 
 
