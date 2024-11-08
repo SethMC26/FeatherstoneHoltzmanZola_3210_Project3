@@ -22,13 +22,13 @@ class Table {
         
         //get texture 
         const texture = new THREE.TextureLoader().load( "textures/darkWood/Wood067_2K-JPG_Color.jpg" );
-        const normalTexutre = new THREE.TextureLoader().load("textures/darkWood/Wood067_2K-JPG_NormalDX.jpg")
+        const normalTexture = new THREE.TextureLoader().load("textures/darkWood/Wood067_2K-JPG_NormalGL.jpg")
         //create legs of table 
         let mat = new THREE.MeshPhongMaterial({
             wireframe: debug, 
             color: 0x693d2c, 
             map: texture,
-            normalMap: normalTexutre
+            normalMap: normalTexture
         });
         let legGeom = new THREE.CylinderGeometry( scale/4, scale/8, scale, 5 ); 
         
@@ -63,7 +63,7 @@ class Table {
             wireframe: debug, 
             color: 0x824a34,
             map: texture, 
-            normalMap: normalTexutre
+            normalMap: normalTexture,
         });
         const top = new THREE.Mesh( topGeom, topMat);
         top.receiveShadow = true;
@@ -90,6 +90,8 @@ class Floor {
      */
     constructor(scale, width=200, height=200, debug = false) {
         const texture = new THREE.TextureLoader().load( "textures/tile/Tiles133D_2K-JPG_Color.jpg" );
+        const normalTexture = new THREE.TextureLoader().load("textures/tile/Tiles133D_2K-JPG_NormalGL.jpg")
+        const bumpTexture = new THREE.TextureLoader().load("textures/tile/Tiles133D_2K-JPG_Roughness.jpg")
         texture.wrapS = THREE.RepeatWrapping;
         texture.wrapT = THREE.RepeatWrapping;
         texture.repeat.set( 2, 2 );
@@ -99,6 +101,8 @@ class Floor {
             wireframe: debug, 
             color: 0x876f5d,
             map: texture, 
+            normalMap: normalTexture,
+            bumpMap: bumpTexture
         });
 
         this.mesh = new THREE.Mesh(floorGeom, floorMat)

@@ -9,7 +9,7 @@ var scene = new THREE.Scene();
 
 var camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, .1, 3000);
 //camera.position.set(-57, 36, 0)  // Try moving this around!
-camera.position.set(0, 30, 70)
+camera.position.set(0, 30, 55)
 camera.lookAt(new THREE.Vector3(0.0, 0.0, 0.0));
 scene.add(camera);
 
@@ -24,8 +24,8 @@ renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 document.body.appendChild(renderer.domElement);
 
 //basic controls for testing 
-const controls = new OrbitControls(camera, renderer.domElement);
-controls.update();
+//const controls = new OrbitControls(camera, renderer.domElement);
+//controls.update();
 
 //create a new table with size 16 (size scaling is still WIP)
 const table = new Table(16);
@@ -51,7 +51,7 @@ let ambientLightOn = true;
 
 
 // Directional light above the table for stronger shadow casting
-const tableLight = new THREE.PointLight(0xFFFFFF, 10000);
+const tableLight = new THREE.PointLight(0xFFFFFF, 5000);
 tableLight.position.set(0, 30, 0);
 tableLight.castShadow = true;
 scene.add(tableLight);
@@ -73,7 +73,7 @@ function animate() {
     const delta = clock.getDelta();
     game.updateAnimations(delta)
 
-    controls.update();
+    //controls.update();
     renderer.render(scene, camera);
 
     requestAnimationFrame(animate);
@@ -112,7 +112,6 @@ function keyHandler(e) {
         case "p":
             pointLightOn = !pointLightOn;
             tableLight.visible = pointLightOn;
-            console.log(`Point light toggled: ${pointLightOn}`);
             break;
         case "m":
             shadowsOn = !shadowsOn;
@@ -121,7 +120,6 @@ function keyHandler(e) {
             table.tableGroup.traverse((object) => {
                 if (object.isMesh) object.castShadow = shadowsOn;
             });
-            console.log(`Shadow on toggled: ${shadowsOn}`);
             break;
 
         case "n":
@@ -143,7 +141,6 @@ function handleTouch(e) {
     // Check if the game is on
     if (game.isGameOn) {
         game.nextTurn();
-        console.log("Next turn triggered by touch");
     } else {
         console.log("Game is over");
     }
